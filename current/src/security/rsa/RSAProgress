@@ -1,0 +1,140 @@
+ 
+
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * 演示RSA算法过程
+ * @author renxing.zhang
+ * <pre>
+ * 
+ * </pre>
+ */
+public class RSAProgress {
+	private static Map<String,String> nummapping=new HashMap();
+	private static Map<String,String> charMapping=new HashMap();
+	//
+	int n;
+	int fn;
+	int e;
+	int d;
+ 
+	//加密秘钥
+	HashMap pub=new HashMap(); 
+	//解密秘钥
+	HashMap priva=new HashMap();
+	 
+	//
+	static{
+		for(int i=1;i<=26;i++){
+			String value=i<10?"0"+i:i+"";
+			String word=""+(char)(96+i);
+			nummapping.put(word, value);
+			charMapping.put(value,word);
+		}
+	}
+
+	/**
+	 * 选取小数值的素数p,q
+	 * @param p
+	 * @param q
+	 */
+	RSAProgress(int p, int q) {
+		/**
+		 * n的长度决定了密文的位数长度，因为解密时需要按照位置长度，截取后解密，
+		 * 测试时让密文数字码的长度在2位之内，所以n最大是99 
+		 * 实现算法时，可以控制n长度为任意长度
+		 * */
+		n = p * q;
+		fn = (p - 1) * (q - 1);
+		e = 3;//这个应该动态去取,算法有待考究,取e与fn互质
+		for(int zhi=2;zhi<fn;zhi++){
+			if(fn % zhi != 0 ){
+				e=zhi;
+				break;
+			}
+		}
+		 
+		 
+		for (d = 2; d < Integer.MAX_VALUE; d++) {
+			boolean result = e * d % fn==1;  //公式，可以得到e*d=1
+			if (result) 
+				break;
+		}
+		
+		// 加密用公钥
+		pub.put(e, n); 
+		// 解密用秘钥
+		priva.put(d, n); 
+		System.out.println("d|"+d+"|e|"+e+"|n|"+n+"|fn|"+fn+"|p|"+p+"|q|"+q+"|私钥|"+pub+"|公钥|"+priva);
+		//
+
+	}
+	
+	/**
+	 * <pre>
+	 * renxing.zhang:
+	 * C=M的e次方(mod) n
+	 * </pre>
+	 * @return
+	 */
+	private int encry(int m,int e,int n){
+		int c=BigDecimal.valueOf(m).pow(e).remainder(BigDecimal.valueOf(n)).intValue();
+		return c ;
+	}
+	private int decry(int c,int d,int n){
+		
+		int m=BigDecimal.valueOf(c).pow(d).remainder(BigDecimal.valueOf(n)).intValue();
+		return m ;
+	}
+	
+	public String encry(String mStr){
+		String result="";
+		for(int i=0;i<mStr.length();i++){
+			char charAt=mStr.charAt(i);
+			String code=nummapping.get(charAt+"");
+			System.out.println("en1|加密原文|"+code);
+			int c=encry(Integer.parseInt(code), e, n);
+			result+=c<10?"0"+c:""+c;
+		}
+		return result;
+	}
+	public String decry(String cStr){
+		String result="";
+		for(int i=0;i<cStr.length()-1;i=i+2){
+			char charAt=cStr.charAt(i);
+			char charAt2=cStr.charAt(i+1);
+			int c=Integer.parseInt(charAt+""+charAt2);
+			int mCode=decry(c, d, n); 
+			System.out.println("d1|解密后内容|"+mCode);
+			String key=mCode<10?"0"+mCode:""+mCode;
+			
+			result+=charMapping.get(key);
+		}
+		return result;
+	}
+	
+	/**
+	 * 质数算法
+	 * */ 
+     
+    public static boolean  zhishu(int num){
+     
+        for(int j = 2; j<=Math.sqrt(num);j++){
+            if(num%j == 0){
+                return false;
+            }
+        }
+        return true;
+    }
+	
+	public static void main(String[] args) {
+		RSAProgress rsaProgress=new RSAProgress(7,11);
+		String mStr="wearegood";
+		String after=rsaProgress.encry(mStr);
+		System.out.println("加密后|"+after);
+		String before=rsaProgress.decry(after);
+		System.out.println("解密后|"+before);
+	}
+}
