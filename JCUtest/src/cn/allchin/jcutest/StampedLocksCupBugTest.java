@@ -3,6 +3,12 @@ package cn.allchin.jcutest;
 import java.util.concurrent.locks.LockSupport;
 import java.util.concurrent.locks.StampedLock;
 
+/**
+ * 演示获取读锁时CPU高的BUG
+ * @author renxing.zhang
+ * @since 1.8
+ *
+ */
 public class StampedLocksCupBugTest {
 	public static void main(String[] args) throws InterruptedException {
 		final StampedLock lock =new StampedLock();
