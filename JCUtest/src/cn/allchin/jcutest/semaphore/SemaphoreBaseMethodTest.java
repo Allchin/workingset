@@ -20,6 +20,8 @@ public class SemaphoreBaseMethodTest implements Features {
 	 * 
 	 * released
 	   after relesase count |3
+	   
+	   结论：小心semphore.release() 重复调用
 	 */
 	public void unname2(){
 		Semaphore semphore = new Semaphore(2);
