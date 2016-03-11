@@ -1,4 +1,4 @@
-package cn.allchin.jcutest;
+package cn.allchin.jcutest.stampedLock;
 
 import java.util.concurrent.locks.LockSupport;
 import java.util.concurrent.locks.StampedLock;
