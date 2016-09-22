@@ -10,6 +10,9 @@ import javassist.CtMethod;
 public class JavassistClassReplaceTest  {
 
 	public static void main(String[] args) throws Exception {
+		/**
+		 * 如果已经被jvm加载过，再次ctClass.toClass();加载类会异常
+		 * */
 		//FooService fooService0 = new FooService();
 		//System.out.println(fooService0.getClass());
 		//

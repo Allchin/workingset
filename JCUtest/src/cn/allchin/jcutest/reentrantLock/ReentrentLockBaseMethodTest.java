@@ -19,6 +19,11 @@ public class ReentrentLockBaseMethodTest implements Features {
 		 };
 		 t.start();
 	}
+	
+	public void tryLock(){
+		 ReentrantLock lock=new ReentrantLock();
+		 lock.tryLock();
+	}
 
 	@Override
 	public boolean isReentrantable() {
