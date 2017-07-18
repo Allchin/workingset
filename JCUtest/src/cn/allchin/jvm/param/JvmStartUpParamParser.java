@@ -40,10 +40,7 @@ public class JvmStartUpParamParser {
 		paramMap.put("-n", "");
 		paramMap.put("-XX:NewRatio", "新生代和年老代的堆内存占用比例, 例如2表示新生代占年老代的1/2");
 		paramMap.put("-XX:NewSize", "新生代占整个堆内存的最大值");
-		
-		paramMap.put("", "");
-		paramMap.put("", "");
-		paramMap.put("", "");
+		 
 		
 	}
 	
@@ -63,17 +60,24 @@ public class JvmStartUpParamParser {
 			return ;
 		}
 		//FIXME 第一期先打印出来中文释义
+		 
 		for(String p:paramMap.keySet()){
-			if (param.startsWith(p)){//匹配
-				
-				System.out.println(param+"|"+paramMap.get(p));
-			};
+			if (param.startsWith(p)){//匹配 
+				 
+				formatOut(param, paramMap.get(p) );
+				return;
+			} 
 		} 
+		
+		formatOut(param, "unknown");
 	} 
 	
+	public static void formatOut(String key,String desc){
+		System.out.println(key+"|	"+desc );
+	}
 	public static String readToLine(String fileName) throws IOException{
 		InputStream is=JvmStartUpParamParser.class.getResourceAsStream(fileName);
-		return FileUtils.readWholeFileAsUTF8(fileName);
+		return FileUtils.readWholeFileAsUTF8(is);
 		
 	}
 }
