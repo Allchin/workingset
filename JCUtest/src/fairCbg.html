@@ -1,0 +1,75 @@
+<html onclick="print()"> 
+<br>high
+<input id="high" value="20.13" />
+<br>low
+<input id="low" value="16.50" />
+<br>cost
+<input id="cost" value="18.4" />
+<br>amount
+<input id="amount" value="4" />
+<br>buy
+<input id="buyPrice" value="16.50" />
+<br>times
+<input id="times" value="8" />
+<br>
+
+<script type="text/javascript">
+window.onload=function(){
+	print(); 
+}
+</script>
+<script type="text/javascript">
+function print(){
+	console.clear();
+	  high=valueOf("high");
+	  low=valueOf("low");
+	  cost=valueOf("cost");
+	  costAmount=valueOf("amount");
+	  times=valueOf("times");
+	  buyPrice=valueOf("buyPrice");
+	//out
+	  downPct=((high-low) /high)*100 + "%";
+	
+ 	  outStr="high|"+high+"|low|"+low+"|downPct|"+downPct ;
+ 	log(outStr);
+ 	log(eachBuy(cost,costAmount,buyPrice,times));
+ 	 
+}
+</script>
+<script type="text/javascript">
+var valueOf=function(identifier){
+	return document.getElementById(identifier).value;
+};
+</script>
+<script type="text/javascript">
+var afterFari=function(priceIn ,amountIN,buyPrice,buyAmount){
+	var all=(priceIn*amountIN+buyPrice*buyAmount);
+	
+	var amt=0 ;
+	amt=parseInt(buyAmount)+parseInt(amountIN);
+	log("af1|all|"+all+"|amount|"+amt+"|amountIN|"+amountIN+"|buyAmount|"+buyAmount);
+	return all/amt;
+}
+</script>
+<script type="text/javascript">
+var eachBuy=function(priceIn,amountIn,buyPirce,times){
+	var out =priceIn;
+	var hand=amountIn;
+	var outStr="NOW|"+priceIn+"|amount|"+amountIn+"|b|"+buyPirce+"|times|"+times+"|<br>";
+	for(  i=1;i<=times;i++){
+		out =afterFari(out ,hand,buyPirce,1);
+		hand++;
+		log( "eb1|times|"+i+"|out|"+out);
+		log("eb2|climb|"+(out-buyPirce)/buyPirce*100+"%");
+	}
+	return outStr;
+}
+</script>
+<script type="text/javascript">
+function log(str){
+	console.info(str);
+	 
+}
+</script>
+<div id="istMark"></div>
+</html>
