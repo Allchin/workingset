@@ -1,0 +1,2 @@
+/* processOfDb */
+select db,count(*) process  from processlist group by db order by process desc ;

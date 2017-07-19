@@ -1,0 +1,13 @@
+/* keyCacheRead */
+select a.VARIABLE_VALUE  key_reads,b.VARIABLE_VALUE  key_read_requests ,
+CONCAT(lEFT(
+(1-a.VARIABLE_VALUE/  b.VARIABLE_VALUE )
+*100,8),'%','') 
+key缓存读命中率
+from  GLOBAL_STATUS a,GLOBAL_STATUS b
+where 
+a.VARIABLE_NAME='key_reads '   
+and  b.VARIABLE_NAME='key_read_requests ';
+
+/*  keyBufSize */
+select * from GLOBAL_variables where VARIABLE_NAME like 'key_buffer_size' ;

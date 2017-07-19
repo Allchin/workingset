@@ -1,0 +1,10 @@
+/* queryCacheFragment */
+select a.VARIABLE_VALUE  Qcache_free_blocks,b.VARIABLE_VALUE  Qcache_total_blocks ,
+CONCAT(lEFT(
+(a.VARIABLE_VALUE/(a.VARIABLE_VALUE+ b.VARIABLE_VALUE))
+*100,8),'%','') 
+查询缓存碎片率
+from  GLOBAL_STATUS a,GLOBAL_STATUS b
+where 
+a.VARIABLE_NAME='Qcache_free_blocks '   
+and  b.VARIABLE_NAME='Qcache_total_blocks ';

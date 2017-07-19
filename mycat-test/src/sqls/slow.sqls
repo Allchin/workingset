@@ -1,0 +1,2 @@
+/* slowQuery */
+select * from  GLOBAL_STATUS where VARIABLE_NAME like '%slow%';    

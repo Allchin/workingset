@@ -1,0 +1,10 @@
+/* lock */
+select a.VARIABLE_VALUE  Table_locks_waited,b.VARIABLE_VALUE  Table_locks_immediate ,
+CONCAT(lEFT(
+(a.VARIABLE_VALUE/  b.VARIABLE_VALUE )
+*100,8),'%','') 
+锁阻塞率
+from  GLOBAL_STATUS a,GLOBAL_STATUS b
+where 
+a.VARIABLE_NAME='Table_locks_waited'   
+and  b.VARIABLE_NAME='Table_locks_immediate';

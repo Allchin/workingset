@@ -1,0 +1,10 @@
+/* innoBufferRead */
+select a.VARIABLE_VALUE  innodb_buffer_pool_reads,b.VARIABLE_VALUE  innodb_buffer_pool_read_requests ,
+CONCAT(lEFT((1-a.VARIABLE_VALUE/b.VARIABLE_VALUE)*100,8),'%','') innodbBuf读命中率
+from  GLOBAL_STATUS a,GLOBAL_STATUS b
+where 
+a.VARIABLE_NAME='innodb_buffer_pool_reads '   
+and  b.VARIABLE_NAME='innodb_buffer_pool_read_requests ';
+
+/* innodbBufSize */
+select * from global_variables where variable_name like '%innodb%size%';    

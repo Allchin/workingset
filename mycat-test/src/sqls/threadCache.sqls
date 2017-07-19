@@ -1,0 +1,16 @@
+/* threadCache */
+select a.VARIABLE_VALUE  Threads_created,
+b.VARIABLE_VALUE  connections ,
+CONCAT(lEFT(
+(1-a.VARIABLE_VALUE/  b.VARIABLE_VALUE )
+*100,8),'%','') 
+线程缓存命中率
+from  GLOBAL_STATUS a,GLOBAL_STATUS b
+where 
+a.VARIABLE_NAME='Threads_created'   
+and  b.VARIABLE_NAME='connections';
+
+/* threadCacheSize*/
+select * from GLOBAL_variables where VARIABLE_NAME like 'THREAD_CACHE_SIZE' ;
+/* threadConnected */
+select * from GLOBAL_status where VARIABLE_NAME like 'THREAD%' ;

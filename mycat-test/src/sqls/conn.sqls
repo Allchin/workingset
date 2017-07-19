@@ -1,0 +1,14 @@
+/*  conn */
+select a.VARIABLE_VALUE  MAX_USER_CONNECTIONS,b.VARIABLE_VALUE  MAX_CONNECTIONS ,
+CONCAT(lEFT(
+(a.VARIABLE_VALUE/(b.VARIABLE_VALUE))
+*100,8),'%','') 
+连接数
+from  GLOBAL_STATUS a,GLOBAL_VARIABLES b
+where 
+a.VARIABLE_NAME='MAX_USED_CONNECTIONS'   
+and  b.VARIABLE_NAME='MAX_CONNECTIONS';
+
+ 
+/* waitTimeout */
+select * from GLOBAL_variables where VARIABLE_NAME like 'wait_timeout';

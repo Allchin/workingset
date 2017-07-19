@@ -1,0 +1,15 @@
+/* queryCache */
+select a.VARIABLE_VALUE  QUERY_CACHE_SIZE,b.VARIABLE_VALUE  QCACHE_FREE_MEMORY ,
+CONCAT(lEFT(
+(
+(a.VARIABLE_VALUE -b.VARIABLE_VALUE)/  a.VARIABLE_VALUE )
+*100,8),'%','') 
+查询缓存利用率
+from  GLOBAL_VARIABLES a,GLOBAL_STATUS b
+where 
+a.VARIABLE_NAME='QUERY_CACHE_SIZE'   
+and  b.VARIABLE_NAME='QCACHE_FREE_MEMORY';
+
+/* queryCacheVariables */
+select * from GLOBAL_STATUS where VARIABLE_NAME like '%Qcache%' ;
+

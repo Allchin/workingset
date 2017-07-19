@@ -1,0 +1,10 @@
+/* keyCacheWrite */
+select a.VARIABLE_VALUE  key_writes,b.VARIABLE_VALUE  key_write_requests ,
+CONCAT(lEFT(
+(1-a.VARIABLE_VALUE/  b.VARIABLE_VALUE )
+*100,8),'%','') 
+key缓存写命中率
+from  GLOBAL_STATUS a,GLOBAL_STATUS b
+where 
+a.VARIABLE_NAME='key_writes'   
+and  b.VARIABLE_NAME='key_write_requests';

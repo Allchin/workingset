@@ -1,0 +1,10 @@
+/* queryCacheHit */
+select a.VARIABLE_VALUE  qcache_hits,b.VARIABLE_VALUE  Qcache_inserts ,
+CONCAT(lEFT(
+(a.VARIABLE_VALUE/(a.VARIABLE_VALUE+ b.VARIABLE_VALUE))
+*100,8),'%','') 
+查询缓存命中率
+from  GLOBAL_STATUS a,GLOBAL_STATUS b
+where 
+a.VARIABLE_NAME='qcache_hits '   
+and  b.VARIABLE_NAME='Qcache_inserts ';
