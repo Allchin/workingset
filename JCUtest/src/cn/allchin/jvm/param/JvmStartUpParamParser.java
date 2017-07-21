@@ -14,6 +14,10 @@ import com.hp.hpl.jena.util.FileUtils;
  * @author renxing.zhang
  *
  */
+/**
+ * @author renxing.zhang
+ *
+ */
 public class JvmStartUpParamParser {
 	public static Map<String,JvmParamDesc> paramMap=new HashMap();
 	static{
@@ -152,6 +156,25 @@ public class JvmStartUpParamParser {
 		paramMap.put("-XX:G1ReservePercent",new JvmParamDesc( "设置作为空闲空间的预留内存百分比，以降低目标空间溢出的风险。默认值是 10%。增加或减少百分比时，请确保对总的 Java 堆调整相同的量。Java HotSpot VM build 23 中没有此设置。"));
 		paramMap.put("-XX:+UnlockExperimentalVMOptions",new JvmParamDesc( "解锁实验性虚拟机标志"));
 		paramMap.put("-XX:G1ReservePercent",new JvmParamDesc( "“目标空间”预留内存量"));
+		
+		//
+		paramMap.put("-XX:MetaspaceSize", new JvmParamDesc("初始空间大小，达到该值就会触发垃圾收集进行类型卸载，同时GC会对该值进行调整：如果释放了大量的空间，就适当降低该值；如果释放了很少的空间，那么在不超过MaxMetaspaceSize时，适当提高该值"));
+		paramMap.put("-XX:MaxMetaspaceSize", new JvmParamDesc("最大空间，默认是没有限制的"));
+		paramMap.put("-XX:G1RSetUpdatingPauseTimePercent", new JvmParamDesc("设置GC evacuation（疏散）阶段期间G1 GC更新RSets消耗时间的百分比（默认是目标停顿时间的10%）。你可以增大或减小百分比的值，以便在stop-the-world(STW)GC阶段花费更多或更少的时间，让concurrent refinement thread处理相应的缓冲区。减少百分比的值，你在推迟concurrent refinement thread的工作；因此，你会看到并发任务增加"));
+		paramMap.put("-XX:+UseStringDeduplication", new JvmParamDesc("使用字符串去重机制"));
+		paramMap.put("-XX:StringDeduplicationAgeThreshold", new JvmParamDesc("字符串存活的最小年龄 ，默认是3"));
+		paramMap.put("-XX:+ParallelRefProcEnabled", new JvmParamDesc("用多个的引用处理线程，而不是单个线程。这个选项不会启用多线程运行方法的finalizer。他会使用很多线程去发现需要排队通知的finalizable对象"));
+		paramMap.put("-XX:+PrintAdaptiveSizePolicy", new JvmParamDesc("打印自适应收集的大小。默认关闭"));
+		
+		paramMap.put("-XX:+PrintTenuringDistribution", new JvmParamDesc("打印对各代信息。"));
+		/**
+		 * 强制要求JVM始终抛出含堆栈的异常(-XX:-OmitStackTraceInFastThrow) 问题描述：生产环境抛异常,但却没有将堆栈信息输出到日志,可以确定的是日志输出时用的是log.error("xx发生错误", e) 问题分析：它跟JDK5的一个新特性有关,对于一些频繁抛出的异常,JDK为了性能会做一个优化,即JIT重新编译后会抛出没有堆栈的异常           而在使用-server模式时,该优化选项是开启的,因此在频繁抛出某个异常一段时间后,该优化开始起作用,即只抛出没有堆栈的异常信息 问题解决：由于该优化是在JIT重新编译后才起作用,因此起初抛出的异常还是有堆栈的,所以可以查看较旧的日志,寻找完整的堆栈信息           另一个解决办法是暂时禁用该优化,即强制要求每次都要抛出有堆栈的异常,幸好JDK提供了通过配置JVM参数的方式来关闭该优化           即-XX:-OmitStackTraceInFastThrow,便可禁用该优化了(注意选项中的减号,加号则表示启用) 官方说明：The compiler in the server VM now provides correct stack backtraces for all "cold" built-in exceptions.          For performance purposes, when such an exception is thrown a few times, the method may be recompiled.          After recompilation, the compiler may choose a faster tactic using preallocated exceptions that do not provide a stack trace.          To disable completely the use of preallocated exceptions, use this new flag: -XX:-OmitStackTraceInFastThrow.
+
+		 * */
+		paramMap.put("-XX:-OmitStackTraceInFastThrow", new JvmParamDesc("强制要求JVM始终抛出含堆栈的异常"));
+		
+		paramMap.put("-XX:MinMetaspaceFreeRatio", new JvmParamDesc("扩大空间的最小比率，当GC后，内存占用超过这一比率，就会扩大空间"));
+		paramMap.put("-XX:MaxMetaspaceFreeRatio", new JvmParamDesc(" 缩小空间的最小比率，当GC后，内存占用低于这一比率，就会缩小空间"));
 		
 		
 		
