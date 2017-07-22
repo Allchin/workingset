@@ -10,9 +10,9 @@ import org.apache.commons.lang.StringUtils;
 import com.hp.hpl.jena.util.FileUtils;
 
 /**
- * GC日志分析工具
+ * G1 GC日志分析工具
  * @author renxing.zhang
- * TODO 
+ *   
  *
  */
 public class JvmGcLogParser {

@@ -10,7 +10,7 @@ import org.apache.commons.lang.StringUtils;
 import com.hp.hpl.jena.util.FileUtils;
 
 /**
- * 解析  启动jvm参数
+ *  jvm启动参数解析工具
  * @author renxing.zhang
  *
  */
