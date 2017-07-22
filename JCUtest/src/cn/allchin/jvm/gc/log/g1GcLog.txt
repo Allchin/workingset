@@ -1,0 +1,34 @@
+0.522: [GC pause (young), 0.15877971 secs]                                         
+       [Parallel Time: 157.1 ms]                                                       
+          [GC Worker Start (ms):  522.1  522.2  522.2  522.2                      
+           Avg: 522.2, Min: 522.1, Max: 522.2, Diff:   0.1]                         
+          [Ext Root Scanning (ms):  1.6  1.5  1.6  1.9                             
+           Avg:   1.7, Min:   1.5, Max:   1.9, Diff:   0.4]                         
+          [Update RS (ms):  38.7  38.8  50.6  37.3                                   
+           Avg:  41.3, Min:  37.3, Max:  50.6, Diff:  13.3]                         
+             [Processed Buffers : 2 2 3 2                                          
+              Sum: 9, Avg: 2, Min: 2, Max: 3, Diff: 1]                              
+          [Scan RS (ms):  9.9  9.7  0.0  9.7                                       
+           Avg:   7.3, Min:   0.0, Max:   9.9, Diff:   9.9]                         
+          [Object Copy (ms):  106.7  106.8  104.6  107.9                          
+           Avg: 106.5, Min: 104.6, Max: 107.9, Diff:   3.3]                         
+          [Termination (ms):  0.0  0.0  0.0  0.0                                  
+           Avg:   0.0, Min:   0.0, Max:   0.0, Diff:   0.0]
+             [Termination Attempts : 1 4 4 6                                    
+              Sum: 15, Avg: 3, Min: 1, Max: 6, Diff: 5]
+          [GC Worker End (ms):  679.1  679.1  679.1  679.1                        
+           Avg: 679.1, Min: 679.1, Max: 679.1, Diff:   0.1]
+          [GC Worker (ms):  156.9  157.0  156.9  156.9                           
+           Avg: 156.9, Min: 156.9, Max: 157.0, Diff:   0.1]
+          [GC Worker Other (ms):  0.3  0.3  0.3  0.3                              
+           Avg:   0.3, Min:   0.3, Max:   0.3, Diff:   0.0]
+       [Clear CT:   0.1 ms]                                                        
+       [Other:   1.5 ms]                                                          
+          [Choose CSet:   0.0 ms]                                                   
+          [Ref Proc:   0.3 ms]                                                    
+          [Ref Enq:   0.0 ms]                                                      
+          [Free CSet:   0.3 ms]                                                     
+       [Eden: 12M(12M)->0B(10M) Survivors: 0B->2048K Heap: 13M(64M)->9739K(64M)]   
+                                                                                   
+                                                                                  
+     [Times: user=0.59 sys=0.02, real=0.16 secs]
