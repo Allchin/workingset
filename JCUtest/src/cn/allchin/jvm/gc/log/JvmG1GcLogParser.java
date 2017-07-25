@@ -16,21 +16,21 @@ import com.hp.hpl.jena.util.FileUtils;
  * 
  *
  */
-public class JvmGcLogParser {
+public class JvmG1GcLogParser {
 	public static void main(String[] args) throws IOException {
 
 		parseFile("g1GcLog.txt");
 	}
 
 	public static void parseFile(String file) throws IOException {
-		String fileText = JvmGcLogParser.readToLine(file);
+		String fileText = JvmG1GcLogParser.readToLine(file);
 		String[] g1Logs = StringUtils.split(fileText, "[");
-		JvmGcLogParser.parse(g1Logs);
+		JvmG1GcLogParser.parse(g1Logs);
 	}
 
 	public static void parse(String fileText) {
 		String[] g1Logs = StringUtils.split(fileText, "[");
-		JvmGcLogParser.parse(g1Logs);
+		JvmG1GcLogParser.parse(g1Logs);
 	}
 
 	public static void parse(String[] g1Logs) {
@@ -131,7 +131,7 @@ public class JvmGcLogParser {
 		constantsMap.put("Code Root Purge", "unknow");
 		constantsMap.put("Redirty Cards", "unknow");
 		constantsMap.put("Humongous Register", "unknow");
-		constantsMap.put("Humongous Reclaim", "巨大对象收集");
+		constantsMap.put("Humongous Reclaim", "巨型对象收集");
 		
 		constantsMap.put("GC concurrent-root-region-scan-start", "并发根分区扫描开始");
 		constantsMap.put("GC concurrent-root-region-scan-end", "并发根分区扫描结束");
@@ -145,7 +145,7 @@ public class JvmGcLogParser {
 		constantsMap.put("GC cleanup", "GC清理阶段");
 	 
 		constantsMap.put("GC pause (young)", "发生一个Evacuation Pause");
-		constantsMap.put("GC pause (G1 Humongous Allocation) (young) (initial-mark)", "unknow");
+		constantsMap.put("GC pause (G1 Humongous Allocation) (young) (initial-mark)", "年轻带初始化标记，举行对象分配");
 		
 		constantsMap.put("Code Root Scanning", "根分区扫描");
 		constantsMap.put("Full GC (Allocation Failure)", "FullGC");
@@ -155,7 +155,7 @@ public class JvmGcLogParser {
 	}
 
 	public static String readToLine(String fileName) throws IOException {
-		InputStream is = JvmGcLogParser.class.getResourceAsStream(fileName);
+		InputStream is = JvmG1GcLogParser.class.getResourceAsStream(fileName);
 		return FileUtils.readWholeFileAsUTF8(is);
 
 	}

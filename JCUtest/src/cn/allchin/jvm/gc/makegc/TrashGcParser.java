@@ -7,14 +7,14 @@ import org.apache.commons.lang.StringUtils;
 
 import com.hp.hpl.jena.util.FileUtils;
 
-import cn.allchin.jvm.gc.log.JvmGcLogParser;
+import cn.allchin.jvm.gc.log.JvmG1GcLogParser;
 
 public class TrashGcParser {
 	public static void parseFile(String file) throws IOException{
 	 
 		InputStream is=TrashGcParser.class.getResourceAsStream(file);
 		String fileText= FileUtils.readWholeFileAsUTF8(is);
-		JvmGcLogParser.parse(fileText);
+		JvmG1GcLogParser.parse(fileText);
 	 
 	}
 	
