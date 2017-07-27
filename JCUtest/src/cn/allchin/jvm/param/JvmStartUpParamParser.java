@@ -176,7 +176,11 @@ public class JvmStartUpParamParser {
 		paramMap.put("-XX:MinMetaspaceFreeRatio", new JvmParamDesc("扩大空间的最小比率，当GC后，内存占用超过这一比率，就会扩大空间"));
 		paramMap.put("-XX:MaxMetaspaceFreeRatio", new JvmParamDesc(" 缩小空间的最小比率，当GC后，内存占用低于这一比率，就会缩小空间"));
 		
+		paramMap.put("-XX:+HeapDumpOnOutOfMemoryError", new JvmParamDesc("OOM时dump堆文件"));
+		paramMap.put("-XX:HeapDumpPath", new JvmParamDesc("dump堆文件的路径"));
 		
+		
+	 
 		
 	}
 	public static class JvmParamDesc{
