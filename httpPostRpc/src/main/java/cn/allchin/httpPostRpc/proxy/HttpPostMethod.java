@@ -1,22 +1,18 @@
-package cn.allchin.httpPostRpc;
+package cn.allchin.httpPostRpc.proxy;
 
 import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.binding.MapperMethod.ParamMap;
-import org.apache.ibatis.session.ResultHandler;
-import org.apache.ibatis.session.RowBounds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.qunar.flight.nts.checkin.util.JaxbXmlUtil;
+import cn.allchin.httpPostRpc.ServiceSession;
+import cn.allchin.httpPostRpc.annotation.HttpPostCall;
+import cn.allchin.httpPostRpc.annotation.HttpPostSerializeUtil;
+import cn.allchin.httpPostRpc.serialize.ProtocolUtil;
+import cn.allchin.httpPostRpc.serialize.support.JaxbXmlUtil;
 
 /**
- * ��������
+ * 方法代理
  * @author renxing.zhang
  *
  */
@@ -36,7 +32,7 @@ public class HttpPostMethod {
 		
 		Object params =args;
 		if(args!=null && args.length ==1){
-			params=args[0];//����������http body ֻ��һ��������ֻ��Ҫһ������
+			params=args[0];//大多数情况下http body 只有一个，我们只需要一个参数
 		}
 	 
 		result= serviceSession.post(params, this.method);
@@ -97,9 +93,9 @@ public class HttpPostMethod {
 			this.method=method;
 			this.returnType = method.getReturnType(); 
 			this.returnsVoid = void.class.equals(this.returnType);
-			this.url =getApiUrlFromAnnotation(method);//  �ӷ���������ע��
+			this.url =getApiUrlFromAnnotation(method);//  从方法上面拿注解
 			
-			//  ������������л�����
+			//  这个方法的序列化工具
 			this.serialiseUtil=getSerializeUtilFromAnnotation(method);
 		}
 
@@ -122,7 +118,7 @@ public class HttpPostMethod {
 				try {
 					return suAnno.value().newInstance();
 				} catch (InstantiationException | IllegalAccessException e) {
-					logger.error("��ȡ������Э�鹤���쳣",e);
+					logger.error("获取方法的协议工具异常",e);
 				}
 			} 
 			return defaultUtil;

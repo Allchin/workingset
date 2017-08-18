@@ -1,4 +1,4 @@
-package cn.allchin.httpPostRpc;
+package cn.allchin.httpPostRpc.spring.startup;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -8,8 +8,10 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.util.StringUtils;
 
+import cn.allchin.httpPostRpc.annotation.HttpPostApi;
+
 /**
- * http post ����ҵ���ʼ������
+ * http post 请求业务初始化工具
  * 
  * @author renxing.zhang
  *
@@ -26,7 +28,7 @@ public class HttpPostScannerConfigurer implements BeanDefinitionRegistryPostProc
 	}
 
 	/* 
-	 * ɨ��������ض�����ע����������ɨ��
+	 * 扫描包，对特定类型注解过的类进行扫描
 	 * (non-Javadoc)
 	 * @see org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor#postProcessBeanDefinitionRegistry(org.springframework.beans.factory.support.BeanDefinitionRegistry)
 	 */

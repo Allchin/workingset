@@ -1,4 +1,4 @@
-package cn.allchin.httpPostRpc;
+package cn.allchin.httpPostRpc.proxy;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
@@ -11,10 +11,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.config.PlaceholderConfigurerSupport;
 import org.springframework.util.PropertyPlaceholderHelper;
 
+import cn.allchin.httpPostRpc.ServiceSession;
+
 /**
- * ������
+ * 代理者
  * 
- * ������ʵľ���ִ����
+ * 代理访问的具体执行类
  * 
  * @author renxing.zhang
  *
@@ -37,9 +39,9 @@ public class HttpPostProxy<T> implements InvocationHandler, Serializable {
 			PlaceholderConfigurerSupport.DEFAULT_VALUE_SEPARATOR, false);
 
 	/**
-	 * @param serviceSession ��Ҫ�����߷��ʵķ������Ự
+	 * @param serviceSession 需要代理者访问的服务器会话
 	  
-	 * @param methodCache ���ʷ������ķ����Ļ���أ������ã�����ÿ������һ����������
+	 * @param methodCache 访问服务器的方法的缓存池，加速用，避免每次生成一个方法对象
 	 */
 	public HttpPostProxy(ServiceSession serviceSession,  
 			Map<Method, HttpPostMethod> methodCache) {

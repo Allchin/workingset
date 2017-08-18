@@ -1,4 +1,4 @@
-package cn.allchin.httpPostRpc;
+package cn.allchin.httpPostRpc.spring.startup;
 
 import java.util.Arrays;
 import java.util.Set;
@@ -11,7 +11,9 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
 import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
 
-import com.qunar.flight.nts.commons.service.FuwuPlantformService;
+import cn.allchin.httpPostRpc.proxy.HttpPostProxyFactoryBean;
+
+ 
 
 /**
  * 给满足条件类型生成bean定义

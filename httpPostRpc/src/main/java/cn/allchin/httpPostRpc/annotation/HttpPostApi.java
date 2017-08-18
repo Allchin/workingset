@@ -1,9 +1,14 @@
-package cn.allchin.httpPostRpc;
+package cn.allchin.httpPostRpc.annotation;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * 表示一个接口需要http rpc特性
+ * @author citi0
+ *
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface HttpPostApi { 

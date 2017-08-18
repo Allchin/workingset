@@ -1,4 +1,4 @@
-package cn.allchin.httpPostRpc;
+package cn.allchin.httpPostRpc.proxy;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -13,10 +13,11 @@ import org.springframework.beans.factory.config.PropertyResourceConfigurer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-import com.qunar.flight.nts.commons.util.PlaceHolderUtil;
+import cn.allchin.httpPostRpc.ServiceSession;
+import cn.allchin.httpPostRpc.spring.util.PlaceHolderUtil;
 
 /**
- * �������bean�����칤��
+ * 代理访问bean的制造工厂
  * @author renxing.zhang
  *
  * @param <T>
