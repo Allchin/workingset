@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import cn.allchin.httpPostRpc.ServiceSession;
 import cn.allchin.httpPostRpc.annotation.HttpPostCall;
 import cn.allchin.httpPostRpc.annotation.HttpPostSerializeUtil;
+import cn.allchin.httpPostRpc.annotation.domain.SessionDomain;
 import cn.allchin.httpPostRpc.serialize.ProtocolUtil;
 import cn.allchin.httpPostRpc.serialize.support.JaxbXmlUtil;
 
@@ -16,6 +17,7 @@ import cn.allchin.httpPostRpc.serialize.support.JaxbXmlUtil;
  * @author renxing.zhang
  *
  */
+@SessionDomain
 public class HttpPostMethod {
 	private static Logger logger = LoggerFactory.getLogger(HttpPostMethod.class);
 	

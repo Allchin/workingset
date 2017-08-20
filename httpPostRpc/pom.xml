@@ -15,7 +15,12 @@
 	</properties>
 
 	<dependencies>
-
+		<!-- http -->
+		<dependency>
+			<groupId>com.qunar.flight.inter</groupId>
+    		<artifactId>ttsi-common-core</artifactId>
+    		<version>0.2.1</version>
+		</dependency>
 		<!-- mybatis -->
 		<dependency>
 			<groupId>org.mybatis</groupId>

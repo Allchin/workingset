@@ -14,6 +14,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 import cn.allchin.httpPostRpc.ServiceSession;
+import cn.allchin.httpPostRpc.annotation.domain.ServiceDomain;
 import cn.allchin.httpPostRpc.spring.util.PlaceHolderUtil;
 
 /**
@@ -22,6 +23,7 @@ import cn.allchin.httpPostRpc.spring.util.PlaceHolderUtil;
  *
  * @param <T>
  */
+@ServiceDomain
 public class HttpPostProxyFactoryBean<T> implements FactoryBean<T>, ApplicationContextAware {
 	private Class<T> mapperInterface;
 	private Map<Method, HttpPostMethod> methodCache = new HashMap<Method, HttpPostMethod>();
@@ -42,7 +44,7 @@ public class HttpPostProxyFactoryBean<T> implements FactoryBean<T>, ApplicationC
 	}
 
 	@SuppressWarnings("unchecked")
-	protected T newInstance(HttpPostProxy<T> mapperProxy) {
+	public T newInstance(HttpPostProxy<T> mapperProxy) {
 		return (T) Proxy.newProxyInstance(mapperInterface.getClassLoader(), new Class[] { mapperInterface },
 				mapperProxy);
 	}

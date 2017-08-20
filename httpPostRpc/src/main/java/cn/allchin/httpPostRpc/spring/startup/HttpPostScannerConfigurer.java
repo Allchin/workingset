@@ -21,7 +21,7 @@ public class HttpPostScannerConfigurer implements BeanDefinitionRegistryPostProc
 
  
 
-	@Override
+ 
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
 		// left intentionally blank
  
@@ -32,7 +32,7 @@ public class HttpPostScannerConfigurer implements BeanDefinitionRegistryPostProc
 	 * (non-Javadoc)
 	 * @see org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor#postProcessBeanDefinitionRegistry(org.springframework.beans.factory.support.BeanDefinitionRegistry)
 	 */
-	@Override
+ 
 	public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
 
 		HttpPostApiScanner scanner = new HttpPostApiScanner(registry);

@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import com.qunar.base.meerkat.http.util.StringUtil;
 import com.google.common.base.Charsets;
 import com.qunar.base.meerkat.http.QunarHttpClient;
-import com.qunar.flight.qmonitor.QMonitor;
+ 
 
 import cn.allchin.httpPostRpc.proxy.HttpPostMethod.MethodSign;
 import cn.allchin.httpPostRpc.serialize.ProtocolUtil;

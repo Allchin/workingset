@@ -12,6 +12,7 @@ import org.springframework.beans.factory.config.PlaceholderConfigurerSupport;
 import org.springframework.util.PropertyPlaceholderHelper;
 
 import cn.allchin.httpPostRpc.ServiceSession;
+import cn.allchin.httpPostRpc.annotation.domain.EntityDomain;
 
 /**
  * 代理者
@@ -22,6 +23,7 @@ import cn.allchin.httpPostRpc.ServiceSession;
  *
  * @param <T>
  */
+@EntityDomain
 public class HttpPostProxy<T> implements InvocationHandler, Serializable {
 
 	/**
