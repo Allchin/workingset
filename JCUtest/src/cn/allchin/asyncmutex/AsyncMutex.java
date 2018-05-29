@@ -6,6 +6,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 import java.util.function.Consumer;
 
+/**
+ * https://mp.weixin.qq.com/s/fxzYeC1yblRScusITOA49g
+ * 
+ *
+ */
 public final class AsyncMutex {
 
 	private static final AtomicReferenceFieldUpdater<InvocationNode, InvocationNode> FORWARD_LIST_UPDATER =
