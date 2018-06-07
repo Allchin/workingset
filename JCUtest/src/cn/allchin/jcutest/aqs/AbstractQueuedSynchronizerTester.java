@@ -7,9 +7,16 @@ import java.util.concurrent.locks.AbstractQueuedSynchronizer;
  * @author renxing.zhang
  *
  */
+ 
 public class AbstractQueuedSynchronizerTester {
 	
+	 
 	
+	
+	/**自己实现的countDownLatch
+	 * @author renxing.zhang
+	 *
+	 */
 	public static class MyCoundDownLatch {
 		private MyCoundDownSync sync=null;
 		MyCoundDownLatch(int size){
@@ -31,4 +38,5 @@ public class AbstractQueuedSynchronizerTester {
 		
 		
 	}
+	
 }
