@@ -16,7 +16,10 @@ public class MyQueuedSynchronizer extends AbstractQueuedSynchronizer {
 	 
     /**
      * 获取资源
-     * 为什么要分2步实现，2个方法来做 ? 
+     * 为什么要分2步实现，2个方法来做 ?
+     * 
+     *  我获取到资源了，为什么要加入队列 ? 
+     *  
      * @param arg
      */
     public   void acquire_(int arg) {
@@ -24,6 +27,12 @@ public class MyQueuedSynchronizer extends AbstractQueuedSynchronizer {
             this.acquireQueued_(addWaiter_(Node.EXCLUSIVE), arg))
             selfInterrupt();
     }
+    /**
+     *  
+     * 将当前线程加入到等待队列的队尾，并返回当前线程所在的结点
+     * @param mode
+     * @return
+     */
     private Node addWaiter_(Node mode) {
         Node node = new Node(Thread.currentThread(), mode);
        
