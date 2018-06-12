@@ -14,6 +14,7 @@ import java.util.concurrent.locks.LockSupport;
  * http://ifeve.com/aqs-2/
  * 
  * ÂÛÎÄ£ºhttp://gee.cs.oswego.edu/dl/papers/aqs.pdf
+ * ·­Òë£ºhttps://blog.csdn.net/FAw67J7/article/details/79885944
  *
  */
 public class MyQueuedSynchronizer extends AbstractQueuedSynchronizer {
