@@ -13,52 +13,24 @@ import java.util.function.Consumer;
  */
 public final class AsyncMutex {
 
-	private static final AtomicReferenceFieldUpdater<InvocationNode, InvocationNode> FORWARD_LIST_UPDATER =
+	private static final AtomicReferenceFieldUpdater<InvocationNode, InvocationNode> FORWARD_LIST_UPDATER = AtomicReferenceFieldUpdater.newUpdater(InvocationNode.class, InvocationNode.class, "next");
 
-	AtomicReferenceFieldUpdater.newUpdater(InvocationNode.class, InvocationNode.class, "next");
-
-	private 	InvocationNode<?> head = new InvocationNode<>(null, null, null);
+	private InvocationNode<?> head = new InvocationNode<>(null, null, null);
 
 	private volatile InvocationNode<?> tail = head;
 
 	private final AtomicInteger pendingCount = new AtomicInteger();
 
-	public <T> void attach(Executor executor,
+	public <T> void attach(Executor executor, Callable<T> callable, Consumer<? super T> callback) {
 
-	Callable<T> callable,
+		InvocationNode<T> current = new InvocationNode<>(executor, callable, callback);
 
-	Consumer<?
-
-	super T> callback)
-
-	{
-
-		InvocationNode<T> current =
-
-		new
-
-		InvocationNode<>(executor, callable, callback);
-
-		while
-
-		(!FORWARD_LIST_UPDATER.weakCompareAndSet(tail,
-
-		null, current))
-
-		{
+		while (!FORWARD_LIST_UPDATER.weakCompareAndSet(tail, null, current)) {
 		}
 
 		tail = current;
 
-		if
-
-		(pendingCount.getAndIncrement()
-
-		==
-
-		0)
-
-		{
+		if (pendingCount.getAndIncrement() == 0) {
 
 			(head = head.next).invoke(this);
 
@@ -66,21 +38,9 @@ public final class AsyncMutex {
 
 	}
 
-	private
+	private void release() {
 
-	void release()
-
-	{
-
-		if
-
-		(pendingCount.decrementAndGet()
-
-		!=
-
-		0)
-
-		{
+		if (pendingCount.decrementAndGet() != 0) {
 
 			(head = head.next).invoke(this);
 
@@ -88,49 +48,16 @@ public final class AsyncMutex {
 
 	}
 
-	private
+	private static final class InvocationNode<T> {
 
-	static
+		private Executor executor;
 
-	final
+		private Callable<T> callable;
 
-	class
+		private Consumer<? super T> callback;
+		volatile InvocationNode<?> next;
 
-	InvocationNode<T>
-
-	{
-
-		private
-
-		Executor executor;
-
-		private
-
-		Callable<T> callable;
-
-		private
-
-		Consumer<?
-
-		super T> callback;
-
-		volatile
-
-		InvocationNode<?>
-
-		next;
-
-		private
-
-		InvocationNode(Executor executor,
-
-		Callable<T> callable,
-
-		Consumer<?
-
-		super T> callback)
-
-		{
+		private InvocationNode(Executor executor, Callable<T> callable, Consumer<? super T> callback) {
 
 			this.executor = executor;
 
@@ -140,89 +67,36 @@ public final class AsyncMutex {
 
 		}
 
-		private
+		private void invoke(AsyncMutex mutex) {
 
-		void invoke(AsyncMutex mutex)
+			try {
+				executor.execute(() -> {
 
-		{
-
-			try
-
-			{
-
-				executor.execute(()
-
-				->
-
-				{
-
-					T result;
-
-					try
-
-					{
-
-						result = callable.call();
-
+					T result; 
+					try { 
+						result = callable.call(); 
+					} 
+					catch (Throwable ignore) { 
+						return; 
+					} 
+					finally { 
+						mutex.release(); 
 					}
 
-					catch
-
-					(Throwable ignore)
-
-					{
-
-						return;
-
+					try { 
+						callback.accept(result); 
+					} 
+					catch (Throwable ignore) { 
 					}
 
-					finally
+					executor = null; 
+					// Help GC 
+					callable = null; 
+					callback = null;
 
-					{
-
-						mutex.release();
-
-					}
-
-					try
-
-					{
-
-						callback.accept(result);
-
-					}
-
-					catch
-
-					(Throwable ignore)
-
-					{
-
-					}
-
-					executor =
-
-					null;
-
-					// Help GC
-
-					callable =
-
-					null;
-
-					callback =
-
-					null;
-
-				});
-
-			}
-
-			catch
-
-			(Throwable ignore)
-
-			{
+				}); 
+			} 
+			catch (Throwable ignore) {
 
 				mutex.release();
 
