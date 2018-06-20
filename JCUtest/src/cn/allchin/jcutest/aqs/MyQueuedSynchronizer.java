@@ -68,6 +68,24 @@ public class MyQueuedSynchronizer extends AbstractQueuedSynchronizer {
             this.acquireQueued_(addWaiter_(Node.EXCLUSIVE), arg))
             selfInterrupt();
     }
+    public void acquire2(int arg){
+    	if(!tryAcquire(arg)){
+    		//创建并新入队 新节点
+    		Node node=addWaiter_(Node.EXCLUSIVE) ;
+    		
+    		Node pred= node.predecessor();
+    		//head 时，结束；tryAcquire 成功时结束
+    		while(pred != head || !tryAcquire(arg)){
+    			if(pred.waitStatus == Node.SIGNAL){
+    				LockSupport.park(this);//调用park()使线程进入waiting状态
+    			}
+    			else{
+    				compareAndSetWaitStatus(pred, pred.waitStatus, Node.SIGNAL);
+    				pred=node.predecessor();
+    			}
+    		}
+    	}
+    }
     /**
      *  
      * 将当前线程加入到等待队列的队尾，并返回当前线程所在的结点
