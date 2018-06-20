@@ -68,6 +68,10 @@ public class MyQueuedSynchronizer extends AbstractQueuedSynchronizer {
             this.acquireQueued_(addWaiter_(Node.EXCLUSIVE), arg))
             selfInterrupt();
     }
+    
+    /**和acquire_语义相同
+     * @param arg
+     */
     public void acquire2(int arg){
     	if(!tryAcquire(arg)){
     		//创建并新入队 新节点
@@ -231,9 +235,22 @@ public class MyQueuedSynchronizer extends AbstractQueuedSynchronizer {
 			// TODO Auto-generated constructor stub
 		}
 
+		/**
+		 * 返回前一个结点,如果是null跑出npe
+		 * 在前一个节点不可能是null时候去使用。
+		 * null check 可以被省略，但是 可以帮助vm ? 
+		 * 
+		 * 为什么不直接返回prev ? 
+		 * @return
+		 */
 		public Node predecessor() {
-			// TODO Auto-generated method stub
-			return null;
+			Node p=prev;
+			if(p == null) {
+				//为什么要判空 ? 
+				throw new NullPointerException();
+			}
+		
+			return p;
 		}
 	}
 }
