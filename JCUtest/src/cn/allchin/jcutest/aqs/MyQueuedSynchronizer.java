@@ -2,7 +2,7 @@ package cn.allchin.jcutest.aqs;
 
 import java.util.concurrent.locks.AbstractQueuedSynchronizer;
 import java.util.concurrent.locks.LockSupport;
-import java.util.concurrent.locks.AbstractQueuedSynchronizer.Node;
+ 
 
 import sun.misc.Unsafe;
 
@@ -138,18 +138,52 @@ public class MyQueuedSynchronizer extends AbstractQueuedSynchronizer {
         Node pred = tail;
         if (pred != null) {
             node.prev = pred;
+            /**
+             * 用cas快速的尝试入队，只尝试一次,如果失败了，就再去兜底 
+             * */
             if (compareAndSetTail(pred, node)) {
                 pred.next = node;
                 return node;
             }
         }
+        /**
+         * 如果上面用cas不行的话，用enq方法兜底
+         * */
         enq(node);
         return node;
     }
-    private void enq(Node node) {
-		// TODO Auto-generated method stub
-		
+    /**
+     * 入队
+     * 
+     * 不断cas重试
+     * 
+     * @param node
+     */
+    private Node enq(Node node) {
+        for (;;) {	//不断重试
+        
+            Node t = tail;
+            if (t == null) { // Must initialize
+            	/**
+            	 * 如果尾巴是空，说明还没初始化呢，就初始化一下
+            	 * 初始化完尾巴和头是同样同一个对象
+            	 * */
+                if (compareAndSetHead(new Node()))
+                    tail = head;
+            } else {
+                node.prev = t;
+                if (compareAndSetTail(t, node)) {
+                    t.next = node;
+                    return t;
+                }
+            }
+        }
+    }
+	private boolean compareAndSetHead(Node node) {
+		return unsafe.compareAndSwapObject(this, headOffset, null, node); 
 	}
+
+
 	/**
 	 * 		//原子的执行
  		   if(tail == pred ) 
@@ -278,8 +312,12 @@ public class MyQueuedSynchronizer extends AbstractQueuedSynchronizer {
 		public Node prev;
 		public static final Node EXCLUSIVE = null;
 		public Object next;
-
 		public Node(Thread currentThread, Node mode) {
+			
+			// TODO Auto-generated constructor stub
+		}
+
+		public Node() {
 			// TODO Auto-generated constructor stub
 		}
 
