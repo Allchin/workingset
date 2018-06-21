@@ -2,6 +2,9 @@ package cn.allchin.jcutest.aqs;
 
 import java.util.concurrent.locks.AbstractQueuedSynchronizer;
 import java.util.concurrent.locks.LockSupport;
+import java.util.concurrent.locks.AbstractQueuedSynchronizer.Node;
+
+import sun.misc.Unsafe;
 
 /**
  * 自己实现的AbstractQueuedSynchronizer
@@ -17,7 +20,33 @@ import java.util.concurrent.locks.LockSupport;
  * 翻译：https://blog.csdn.net/FAw67J7/article/details/79885944
  *
  */
+@SuppressWarnings("restriction")
 public class MyQueuedSynchronizer extends AbstractQueuedSynchronizer {
+	private static final Unsafe unsafe = Unsafe.getUnsafe();
+    private static final long stateOffset;
+    private static final long headOffset;
+    private static final long tailOffset;
+    private static final long waitStatusOffset;
+    private static final long nextOffset;
+
+    static {
+        try {
+            stateOffset = unsafe.objectFieldOffset
+                (MyQueuedSynchronizer.class.getDeclaredField("state"));
+            headOffset = unsafe.objectFieldOffset
+                (MyQueuedSynchronizer.class.getDeclaredField("head"));
+            tailOffset = unsafe.objectFieldOffset
+                (MyQueuedSynchronizer.class.getDeclaredField("tail"));
+            waitStatusOffset = unsafe.objectFieldOffset
+                (Node.class.getDeclaredField("waitStatus"));
+            nextOffset = unsafe.objectFieldOffset
+                (Node.class.getDeclaredField("next"));
+
+        } catch (Exception ex) { throw new Error(ex); }
+    }
+    
+    
+    
 	Node head;
 	Node tail;
 	
@@ -81,10 +110,16 @@ public class MyQueuedSynchronizer extends AbstractQueuedSynchronizer {
     		//head 时，结束；tryAcquire 成功时结束
     		while(pred != head || !tryAcquire(arg)){
     			if(pred.waitStatus == Node.SIGNAL){
+    				//Q: 我park了，什么时候unpark 呢??? 
     				LockSupport.park(this);//调用park()使线程进入waiting状态
     			}
     			else{
+    				//Q:将我的前一项设置为SIGNAL  
+    				//A:让前一个节点可以被unpark
     				compareAndSetWaitStatus(pred, pred.waitStatus, Node.SIGNAL);
+    				
+    				//Q:为啥要重新获取pred,那不就再进来的时候就一定park了么 
+    				//A:重新获取pred才有机会获取到head 
     				pred=node.predecessor();
     			}
     		}
@@ -115,9 +150,18 @@ public class MyQueuedSynchronizer extends AbstractQueuedSynchronizer {
 		// TODO Auto-generated method stub
 		
 	}
-	private boolean compareAndSetTail(Node pred, Node node) {
-		// TODO Auto-generated method stub
-		return false;
+	/**
+	 * 		//原子的执行
+ 		   if(tail == pred ) 
+			tail =node; 
+		 
+	 * @param pred
+	 * @param node
+	 * @return
+	 */
+	private boolean compareAndSetTail(Node pred, Node node) { 
+		return unsafe.compareAndSwapObject(this, tailOffset, pred, node);
+	 
 	}
 	public void selfInterrupt(){};
 	/**
@@ -225,7 +269,11 @@ public class MyQueuedSynchronizer extends AbstractQueuedSynchronizer {
 
 	public static class Node {
 
-		public static final int SIGNAL = 0;
+		  /** 
+		   * 当waitStatus是signal时表示 准备好了被unparking
+		   * waitStatus value to indicate successor's thread needs unparking */
+        static final int SIGNAL    = -1;
+        
 		public int waitStatus;
 		public Node prev;
 		public static final Node EXCLUSIVE = null;
