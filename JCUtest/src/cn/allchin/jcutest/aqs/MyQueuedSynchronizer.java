@@ -6,6 +6,7 @@ import java.util.concurrent.locks.LockSupport;
 import sun.misc.Unsafe;
 
 /**
+ *  <pre>
  * 自己实现的AbstractQueuedSynchronizer
  * 
  * @author renxing.zhang
@@ -44,6 +45,7 @@ public class MyQueuedSynchronizer extends AbstractQueuedSynchronizer {
 	Node tail;
 
 	/**
+	 *  <pre>
 	 * 此方法是独占模式下线程释放共享资源的顶层入口。它会释放指定量的资源，如果彻底释放了（即state=0）, 它会唤醒等待队列里的其他线程来获取资源。
 	 * 这也正是unlock()的语义，当然不仅仅只限于unlock()。下面是release()的源码：
 	 * 
@@ -67,6 +69,7 @@ public class MyQueuedSynchronizer extends AbstractQueuedSynchronizer {
 	}
 
 	/**
+	 *  <pre>
 	 * 获取资源 为什么要分2步实现，2个方法来做 ?
 	 * 
 	 * 我获取到资源了，为什么要加入队列 ?
@@ -82,6 +85,10 @@ public class MyQueuedSynchronizer extends AbstractQueuedSynchronizer {
 	 * @param arg
 	 */
 	public void acquire_(int arg) {
+		/**
+		 * 1调用自定义同步器的tryAcquire()尝试直接去获取资源，如果成功则直接返回； 2
+	 * 没成功，则addWaiter()将该线程加入等待队列的尾部，并标记为独占模式；
+		 * */
 		if (!tryAcquire(arg) && this.acquireQueued_(addWaiter_(Node.EXCLUSIVE), arg))
 			selfInterrupt();
 	}
@@ -145,6 +152,7 @@ public class MyQueuedSynchronizer extends AbstractQueuedSynchronizer {
 	}
 
 	/**
+	 *  <pre>
 	 * 入队
 	 * 
 	 * 不断cas重试
@@ -191,6 +199,7 @@ public class MyQueuedSynchronizer extends AbstractQueuedSynchronizer {
 	};
 
 	/**
+	 * <pre>
 	 * 在当前节点能获取资源 前 等待
 	 * 
 	 * 这个方法存在意义，看 acquire
@@ -248,6 +257,7 @@ public class MyQueuedSynchronizer extends AbstractQueuedSynchronizer {
 	}
 
 	/**
+	 *  <pre>
 	 * 如果线程找好安全休息点后，那就可以安心去休息了。 此方法就是让线程去休息，真正进入等待状态。
 	 * 
 	 * @return
@@ -357,6 +367,7 @@ public class MyQueuedSynchronizer extends AbstractQueuedSynchronizer {
 		}
 
 		/**
+		 *  <pre>
 		 * 返回前一个结点,如果是null跑出npe 在前一个节点不可能是null时候去使用。 null check 可以被省略，但是 可以帮助vm ?
 		 * 
 		 * 为什么不直接返回prev ?
