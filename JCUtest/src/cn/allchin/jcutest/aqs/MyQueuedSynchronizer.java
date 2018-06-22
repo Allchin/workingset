@@ -46,7 +46,9 @@ public class MyQueuedSynchronizer extends AbstractQueuedSynchronizer {
 
 	/**
 	 *  <pre>
-	 * 此方法是独占模式下线程释放共享资源的顶层入口。它会释放指定量的资源，如果彻底释放了（即state=0）, 它会唤醒等待队列里的其他线程来获取资源。
+	 * 此方法是独占模式下线程释放共享资源的顶层入口。
+	 * 它会释放指定量的资源，如果彻底释放了（即state=0）, 
+	 * 它会唤醒等待队列里的其他线程来获取资源。
 	 * 这也正是unlock()的语义，当然不仅仅只限于unlock()。下面是release()的源码：
 	 * 
 	 * 
@@ -196,6 +198,7 @@ public class MyQueuedSynchronizer extends AbstractQueuedSynchronizer {
 	}
 
 	public void selfInterrupt() {
+		Thread.currentThread().interrupt();
 	};
 
 	/**
