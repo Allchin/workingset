@@ -45,6 +45,15 @@ Space losses: 0 bytes internal + 0 bytes external = 0 bytes total
 public class JOLSample_03_Packing {
 
     /*
+     * 展示了jvm如果将对象的字段打包，以最小化内存占用。
+     * 运行这个例子可以看到字段被紧密的打包，
+     * 并且空隙是最小的。
+     * 对齐字段的方式是 8 4 2 1字节逐渐减小的，因为我们将8字节的成员放前面，就不必打破初始化的对齐方式。
+     * 初始化就是8字节对齐的，所以产生的空隙，可以被更小体积的成员填充。
+     * 
+     * 注意真是的字段顺序和我们声明代码时的顺序是不同的。
+     * 
+     * 
      * This is the example how VM packs the fields.
      *
      * JVMs pack the fields to minimize the memory footprint. Run

@@ -56,7 +56,7 @@ cn.allchin.jvm.objecjtlayout.JOLSample_04_Inheritance$C object internals:
 Instance size: 24 bytes
 Space losses: 0 bytes internal + 0 bytes external = 0 bytes total
 
-
+TODO 
  */
 public class JOLSample_04_Inheritance {
 
