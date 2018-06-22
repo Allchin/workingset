@@ -210,7 +210,7 @@ public class MyQueuedSynchronizer extends AbstractQueuedSynchronizer {
 	 * 
 	 * @param node
 	 * @param arg
-	 * @return
+	 * @return true 是否中断过
 	 */
 	boolean acquireQueued_(final Node node, int arg) {
 		boolean failed = true;// 标记是否成功拿到资源
