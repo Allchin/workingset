@@ -2,6 +2,7 @@ package cn.allchin.jcutest.aqs;
 
 import java.util.concurrent.locks.AbstractQueuedSynchronizer;
 import java.util.concurrent.locks.LockSupport;
+import java.util.concurrent.locks.AbstractQueuedSynchronizer.Node;
 
 import sun.misc.Unsafe;
 
@@ -407,6 +408,10 @@ public class MyQueuedSynchronizer extends AbstractQueuedSynchronizer {
 
 	private void setHead(Node node) {
 		head = node;
+		/**
+		 * Q:设置头就设置头，为啥要把头的thead设置为null ?
+		 * 
+		 * */
 		node.thread = null;
 		node.prev = null;
 	}
@@ -491,10 +496,14 @@ public class MyQueuedSynchronizer extends AbstractQueuedSynchronizer {
 		public Node prev;
 		public static final Node EXCLUSIVE = null;
 		public Node next;
-
+		/**
+		 * Q: 这是什么鬼 ? 为啥叫nextwaiter ? 干什么使
+		 */
+		public Node nextWaiter;
 		public Node(Thread currentThread, Node mode) {
-
-			// TODO Auto-generated constructor stub
+			 this.nextWaiter = mode;
+			 this.thread=currentThread;
+			 
 		}
 
 		public Node() {
@@ -512,7 +521,7 @@ public class MyQueuedSynchronizer extends AbstractQueuedSynchronizer {
 		public Node predecessor() {
 			Node p = prev;
 			if (p == null) {
-				// 为什么要判空 ?
+				//Q: 为什么要判空 ?
 				throw new NullPointerException();
 			}
 
