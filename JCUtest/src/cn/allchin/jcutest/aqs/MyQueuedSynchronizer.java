@@ -2,7 +2,6 @@ package cn.allchin.jcutest.aqs;
 
 import java.util.concurrent.locks.AbstractQueuedSynchronizer;
 import java.util.concurrent.locks.LockSupport;
-import java.util.concurrent.locks.AbstractQueuedSynchronizer.Node;
 
 import sun.misc.Unsafe;
 
