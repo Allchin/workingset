@@ -2,6 +2,7 @@ package cn.allchin.jcutest.aqs;
 
 import java.util.concurrent.locks.AbstractQueuedSynchronizer;
 import java.util.concurrent.locks.LockSupport;
+import java.util.concurrent.locks.AbstractQueuedSynchronizer.Node;
 
 import sun.misc.Unsafe;
 
@@ -65,10 +66,47 @@ public class MyQueuedSynchronizer extends AbstractQueuedSynchronizer {
 		return false;
 	}
 
-	private void unparkSuccessor(Node h) {
-		// TODO Auto-generated method stub
+	/**
+	 * 唤醒node后面的有效的节点
+	 * @param node
+	 */
+	private void unparkSuccessor(Node node) {
+        /*
+         * If status is negative (i.e., possibly needing signal) try
+         * to clear in anticipation of signalling.  It is OK if this
+         * fails or if status is changed by waiting thread.
+         * Q:为啥要设置成 0 
+         * ???
+         */
+        int ws = node.waitStatus;
+        if (ws < 0)
+            compareAndSetWaitStatus(node, ws, 0);
 
-	}
+        /*
+         * Thread to unpark is held in successor, which is normally
+         * just the next node.  But if cancelled or apparently null,
+         * traverse backwards from tail to find the actual
+         * non-cancelled successor.
+         */
+        Node s = node.next;
+        /**
+         * 如果位于第二的元素为空，或者第二元素已经被取消执行了
+         * */
+        if (s == null || s.waitStatus > 0) {
+            s = null;
+            /**
+             * Q:为啥从后向前找啊，从前往后不是更快么？
+             * A: 因为第二元素已经被取消，那他的next实际上就不准了，或者是null了
+             * 
+             * 从尾巴一直向前找，找到最前面的需要被unaprk的节点
+             * */
+            for (Node t = tail; t != null && t != node; t = t.prev)
+                if (t.waitStatus <= 0)
+                    s = t;
+        }
+        if (s != null)
+            LockSupport.unpark(s.thread);
+    }
 
 	/**
 	 *  <pre>
@@ -109,7 +147,8 @@ public class MyQueuedSynchronizer extends AbstractQueuedSynchronizer {
 			// head 时，结束；tryAcquire 成功时结束
 			while (pred != head || !tryAcquire(arg)) {
 				if (pred.waitStatus == Node.SIGNAL) {
-					// Q: 我park了，什么时候unpark 呢???
+					// Q: 我park了，什么时候unpark 呢
+					// A :release 的时候
 					LockSupport.park(this);// 调用park()使线程进入waiting状态
 				} else {
 					// Q:将我的前一项设置为SIGNAL
@@ -348,17 +387,21 @@ public class MyQueuedSynchronizer extends AbstractQueuedSynchronizer {
         static final int PROPAGATE = -3;
 
 		/**
-		 * 当waitStatus是signal时表示 准备好了被unparking waitStatus value to indicate successor's
+		 * 当waitStatus是signal时表示 准备好了被unparking
+		 *  waitStatus value to indicate successor's
 		 * thread needs unparking
 		 */
 		static final int SIGNAL = -1;
         /**  这个线程已经被取消 */
         static final int CANCELLED =  1;
         
+		/**
+		 * 是负数表示正在等待unpark
+		 */
 		public int waitStatus;
 		public Node prev;
 		public static final Node EXCLUSIVE = null;
-		public Object next;
+		public Node next;
 
 		public Node(Thread currentThread, Node mode) {
 
