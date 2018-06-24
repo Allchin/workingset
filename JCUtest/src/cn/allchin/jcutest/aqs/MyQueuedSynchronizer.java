@@ -2,7 +2,6 @@ package cn.allchin.jcutest.aqs;
 
 import java.util.concurrent.locks.AbstractQueuedSynchronizer;
 import java.util.concurrent.locks.LockSupport;
-import java.util.concurrent.locks.AbstractQueuedSynchronizer.Node;
 
 import sun.misc.Unsafe;
 
@@ -294,6 +293,11 @@ public class MyQueuedSynchronizer extends AbstractQueuedSynchronizer {
 			}
 		} finally {
 			if (failed)
+				/**
+				 * failed表示，还没拿到资源，正在等待呢，就遇到了中断
+				 * Q:一般不能够啊，for ever循环里面，只要是返回了，failed都是false 啊
+				 * ??怎么回事
+				 * */
 				cancelAcquire(node);
 		}
 	}
@@ -311,9 +315,94 @@ public class MyQueuedSynchronizer extends AbstractQueuedSynchronizer {
 
 	}
 
+	/**
+	 * 取消node
+	 * @param node
+	 */
 	private void cancelAcquire(Node node) {
-		// TODO Auto-generated method stub
+        // Ignore if node doesn't exist
+        if (node == null)
+            return;
 
+        node.thread = null;
+
+        // Skip cancelled predecessors
+        /**
+         * 向前找pred节点，直道找到一个没被取消的节点
+         * */
+        Node pred = node.prev;
+        while (pred.waitStatus > 0)
+            node.prev = pred = pred.prev;
+
+        // predNext is the apparent node to unsplice. CASes below will
+        // fail if not, in which case, we lost race vs another cancel
+        // or signal, so no further action is necessary.
+        Node predNext = pred.next;
+
+        // Can use unconditional write instead of CAS here.
+        // After this atomic step, other Nodes can skip past us.
+        // Before, we are free of interference from other threads.
+        /**
+         * 可以使用无条件的写操作，这个设置之后，
+         * 其他节点就能跳过此节点，
+         * 之前，我们可以自由的查看其他线程
+         * */
+        node.waitStatus = Node.CANCELLED;
+
+        // If we are the tail, remove ourselves.
+        /**
+         * 如果当前节点已经是尾巴了，直接将前一个节点设置为尾巴
+         * */
+        if (node == tail && compareAndSetTail(node, pred)) {
+        	/**
+        	 * 被设置成新的尾巴的pred对象，是不能再有next的
+        	 * 
+        	 * */
+            compareAndSetNext(pred, predNext, null);
+        } else {
+            // If successor needs signal, try to set pred's next-link
+            // so it will get one. Otherwise wake it up to propagate.
+        	/**
+        	 * 当前node不是尾巴，也不是头
+        	 * 并且（
+        	 * 前一个节点的状态是SIGNAL或者；
+        	 * 前一个状态需要被unpark 并且将前一个节点的状态成功设置成为了SIGNAL,
+        	 * 
+        	 * ）
+        	 * 并且，前一个节点的线程不是空的
+        	 * 
+        	 * 我们就把前一个节点和当前节点的下个节点链接起来!
+        	 * */
+            int ws;
+            if (pred != head &&
+                ((ws = pred.waitStatus) == Node.SIGNAL ||
+                 (ws <= 0 && compareAndSetWaitStatus(pred, ws, Node.SIGNAL))) &&
+                pred.thread != null) {
+            	
+                Node next = node.next;
+                if (next != null && next.waitStatus <= 0)
+                	/**
+                	 * 将前一个节点和当前节点的下个节点链接起来，这样当前节点就出队了
+                	 * */
+                    compareAndSetNext(pred, predNext, next);
+            } else {
+            	/**
+            	 * 如果当前节点是头了,就把我之后的节点唤醒
+            	 * Q: 如果是头了，那不应该将自己出队么？ 
+            	 * A: 因为再acquire重的acquireQueued_操作重，第二个线程发现自己作为老二，还能获取到资源，
+            	 * 就会把自己为头，所以老head就出队成功了；并且会释放第一个元素的next，能回收资源
+            	 * */
+                unparkSuccessor(node);
+            }
+
+            node.next = node; // help GC
+        }
+    }
+ 
+	private boolean compareAndSetNext(Node pred, Node predNext, Object update) {
+		return unsafe.compareAndSwapObject(pred, nextOffset, predNext, update);
+		 
+		
 	}
 
 	private void setHead(Node node) {
@@ -369,8 +458,8 @@ public class MyQueuedSynchronizer extends AbstractQueuedSynchronizer {
 
 	}
 
-	private static void compareAndSetWaitStatus(Node pred, int ws, int signal) {
-		unsafe.compareAndSwapInt(pred, waitStatusOffset, ws, signal); 
+	private static boolean compareAndSetWaitStatus(Node pred, int ws, int signal) {
+		return unsafe.compareAndSwapInt(pred, waitStatusOffset, ws, signal); 
 
 	}
 
