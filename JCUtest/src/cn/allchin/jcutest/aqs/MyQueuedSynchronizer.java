@@ -8,6 +8,10 @@ import sun.misc.Unsafe;
 /**
  *  <pre>
  * 自己实现的AbstractQueuedSynchronizer
+ * step1 :
+ * 实现了基本的acquire和release方法
+ * step2 :
+ * condition object TODO 
  * 
  * @author renxing.zhang
  * 
@@ -496,7 +500,24 @@ public class MyQueuedSynchronizer extends AbstractQueuedSynchronizer {
 		public static final Node EXCLUSIVE = null;
 		public Node next;
 		/**
+		 * <pre>
 		 * Q: 这是什么鬼 ? 为啥叫nextwaiter ? 干什么使
+		 * 
+		 * Link to next node waiting on condition, 
+		 * or the special value SHARED. 
+		 * Because condition queues are accessed only when holding in exclusive mode, 
+		 * we just need a simple linked queue to hold nodes 
+		 * while they are waiting on conditions. 
+		 * They are then transferred to the queue to re-acquire. 
+		 * And because conditions can only be exclusive, 
+		 * we save a field by using special value to indicate shared mode.
+	       
+	       连接到下个等待条件的节点，或者是特殊值SHARED.
+	       因为条件队列只有在排他模式才能被访问，
+	       在节点在等待条件时，我们只需要用一个简单的链表队列去装节点。
+	       稍后他们被传输到队列中去重新申请资源.
+	       并且因为条件只能是排他的，我们用一个特殊值去代表共享模式。
+
 		 */
 		public Node nextWaiter;
 		public Node(Thread currentThread, Node mode) {
@@ -505,8 +526,7 @@ public class MyQueuedSynchronizer extends AbstractQueuedSynchronizer {
 			 
 		}
 
-		public Node() {
-			// TODO Auto-generated constructor stub
+		public Node() { 
 		}
 
 		/**
