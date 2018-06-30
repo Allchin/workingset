@@ -14,6 +14,12 @@ package cn.allchin.os.mem.l3;
  *
  */
 import sun.misc.Contended;
+/**
+ * 跑的时候记得加
+ * -XX:-RestrictContended
+ * @author renxing.zhang
+ *
+ */
 public class FalseShareJava8 implements  Runnable {  
     public static int NUM_THREADS = 4; // change  
     public final static long ITERATIONS = 500L * 1000L * 1000L;  
