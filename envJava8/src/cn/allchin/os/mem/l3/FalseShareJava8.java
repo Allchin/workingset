@@ -15,6 +15,8 @@ package cn.allchin.os.mem.l3;
  */
 import sun.misc.Contended;
 /**
+ * doge lee 大神的测试类
+ * 
  * 跑的时候记得加
  * -XX:-RestrictContended
  * @author renxing.zhang
