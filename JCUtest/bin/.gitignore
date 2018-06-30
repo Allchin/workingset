@@ -1,2 +1,17 @@
 /cn/
+/com/
+/diago-datasource.js
+/diago-redis.js
 /fairCbg.html
+/flight/
+/isolate-datasource-zb.js
+/isolate-datasource.js
+/java/
+/kv-redis.js
+/limitPush-ssdb.js
+/lingzhen/
+/log4j.xml
+/lua/
+/mem/
+/qps-datasource.js
+/sqls/

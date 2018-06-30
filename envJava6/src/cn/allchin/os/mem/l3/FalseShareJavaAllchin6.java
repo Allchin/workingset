@@ -1,18 +1,25 @@
 package cn.allchin.os.mem.l3;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.openjdk.jol.info.ClassLayout;
 import org.openjdk.jol.vm.VM;
 
 /**
  * <pre>
  * 我想对FalseShareJava6 做个重构，但是为啥结果差异这么大
+ * 这个结果还有点疑问？
+ * 为什么size 超过64的反而更快了
  * 
- * 结果
- * 
-cn.allchin.os.mem.l3.FalseShareJava6$Size80@100c62c8测试运行时间|duration = 11699522647
-cn.allchin.os.mem.l3.FalseShareJava6$Size72@2c79a2e7测试运行时间|duration = 12731179490
-cn.allchin.os.mem.l3.FalseShareJava6$Size64@68da4b71测试运行时间|duration = 12366082633
-cn.allchin.os.mem.l3.FalseShareJava6$Size56@6e811c88测试运行时间|duration = 11527726797
+class cn.allchin.os.mem.l3.FalseShareJavaAllchin6$Size32|avg|15055455725
+class cn.allchin.os.mem.l3.FalseShareJavaAllchin6$Size56|avg|15758899288
+class cn.allchin.os.mem.l3.FalseShareJavaAllchin6$Size64|avg|11574395634
+class cn.allchin.os.mem.l3.FalseShareJavaAllchin6$Size72|avg|12044148643
+class cn.allchin.os.mem.l3.FalseShareJavaAllchin6$Size80|avg|11533109017
+
  * @author citi0
  *
  */
@@ -34,7 +41,7 @@ public class FalseShareJavaAllchin6 implements Runnable {
 	}
 
 	/**
-	 * 哈哈，矛盾了， 测试执行需要jdk 1.6
+	 * 
 	 * 
 	 * @param args
 	 * @throws Exception
@@ -42,49 +49,49 @@ public class FalseShareJavaAllchin6 implements Runnable {
 	public static void main(final String[] args) throws Exception {
 		System.out.println(System.getProperties().get("java.version"));
 		System.out.println(VM.current().details()); 
-		{
-			String layout = ClassLayout.parseClass(Size72.class).toPrintable();
+		Class[] clazzs=new Class[]{Size80.class,Size72.class,Size64.class,Size56.class,Size32.class};
+		for(int i=0;i<clazzs.length;i++){
+			String layout = ClassLayout.parseClass(clazzs[i]).toPrintable();
 			System.out.println(layout); 
 		}
-		{
-			String layout = ClassLayout.parseClass(Size64.class).toPrintable();
-			System.out.println(layout); 
+		Map<Class,List<Long>> map=new HashMap<Class,List<Long>>();
+		int retryTimes=7;
+		for(int times=0;times<retryTimes;times++){
+			for(int classIdx=0;classIdx<clazzs.length;classIdx++){
+				Class clazz=clazzs[classIdx];
+				List<Long> longList = map.get(clazz);
+				if(longList == null){
+					longList=new ArrayList<Long>();
+					map.put(clazz, longList);
+				}
+				long during=work(clazz);
+				longList.add(during); 
+			}
+		} 
+		System.out.println(map);
+		for(Class clazz:map.keySet()){
+			long total=0;
+			for(Long l:map.get(clazz)){
+				total+=l;
+			}
+			long avg=total/map.get(clazz).size();
+			System.out.println(clazz+"|avg|"+avg);
 		}
-		{
-			String layout = ClassLayout.parseClass(Size56.class).toPrintable();
-			System.out.println(layout);  
-		}
- 
-		String layout = ClassLayout.parseClass(Size80.class).toPrintable();
-		System.out.println(layout);
-		work(Size80.class);
-		work(Size72.class);
-		work(Size64.class);
-		work(Size56.class);
-	 
-
 	}
-	private static void work(Class<? extends VolatileType > clazz) throws InstantiationException, IllegalAccessException, InterruptedException{
-
+	private static long work(Class<? extends VolatileType > clazz) throws InstantiationException, IllegalAccessException, InterruptedException{
+	
  
 		for (int i = 0; i < longs.length; i++) {
+			//new Instance是不是比较慢啊,但是不影响测试才对
 			longs[i] = clazz.newInstance();
-		}
-
-		final long start = System.nanoTime();
-		runTest();
-		System.out.println(longs[0] + "测试运行时间|duration = " + (System.nanoTime() - start));
-
-	
-	}
-
-	private static void runTest() throws InterruptedException {
+		}  
 		Thread[] threads = new Thread[NUM_THREADS];
 
 		for (int i = 0; i < threads.length; i++) {
 			threads[i] = new Thread(new FalseShareJavaAllchin6(i));
 		}
-
+		Thread.sleep(1000);
+		final long start = System.nanoTime();
 		for (Thread t : threads) {
 			t.start();
 		}
@@ -92,6 +99,9 @@ public class FalseShareJavaAllchin6 implements Runnable {
 		for (Thread t : threads) {
 			t.join();
 		}
+		long during=System.nanoTime() - start;
+		System.out.println(longs[0] + "测试运行时间|duration = " + (during));
+		return during;
 	}
 
 	/**
@@ -116,6 +126,11 @@ public class FalseShareJavaAllchin6 implements Runnable {
 	public final static class Size72 extends VolatileType {
 
 		public long p1, p2, p3, p4, p5, p6; // comment out
+
+	}
+	public final static class Size32 extends VolatileType {
+
+		public long   p6; // comment out
 
 	}
 
