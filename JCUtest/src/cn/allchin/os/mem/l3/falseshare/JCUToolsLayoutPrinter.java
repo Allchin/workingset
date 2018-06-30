@@ -1,4 +1,4 @@
-package cn.allchin.os.mem.l3;
+package cn.allchin.os.mem.l3.falseshare;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;

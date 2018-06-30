@@ -1,12 +1,12 @@
-package cn.allchin.os.mem.l3;
+package cn.allchin.os.mem.l3.falseshare;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import cn.allchin.os.mem.l3.JCUToolsLayoutPrinter.AlingmentAtomicInteger;
-import cn.allchin.os.mem.l3.JCUToolsLayoutPrinter.ManualAlingmentAtomicInteger;
+import cn.allchin.os.mem.l3.falseshare.JCUToolsLayoutPrinter.AlingmentAtomicInteger;
+import cn.allchin.os.mem.l3.falseshare.JCUToolsLayoutPrinter.ManualAlingmentAtomicInteger;
 
 /**
  * <pre>
