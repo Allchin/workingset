@@ -1,13 +1,17 @@
 package cn.allchin.os.mem.l3.falseshare.padding;
 
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+ 
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * <pre>
- * 问题：
+ * Q: 
  * padding 在早起的ConcurrentHashMap中是怎么使用的 ? 
- * 
+ * A:
+ *  private transient volatile CounterCell[] counterCells;
+ *  看起来和LongAdder使用场景是一样滴，用在volatile 修饰的并发访问的数组类上
  * 
  * http://gee.cs.oswego.edu/cgi-bin/viewcvs.cgi/jsr166/src/jsr166e/ConcurrentHashMapV8.java?revision=1.121&view=markup
  * 
@@ -16,7 +20,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class PaddedUsageConcurrentHashMapV8Tester {
 	public static void main(String[] args) {
-
+		ConcurrentHashMap chm=new ConcurrentHashMap();
 	}
 
 	/** Number of CPUS, to place bounds on some sizings */
@@ -26,7 +30,10 @@ public class PaddedUsageConcurrentHashMapV8Tester {
 
 	// A padded cell for distributing counts
 	/**
-	 * 这个分布式计数器 使用了padding
+	 * <pre>
+	 * 早期，这个分布式计数器 使用了padding
+	 * 
+	 * 现在，java 8 中，开始使用@sun.misc.Contended来注解了
 	 * 
 	 * @author renxing.zhang
 	 *

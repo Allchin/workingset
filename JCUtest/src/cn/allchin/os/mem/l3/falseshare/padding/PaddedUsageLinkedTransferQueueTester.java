@@ -11,9 +11,10 @@ import org.openjdk.jol.vm.VM;
 
 /**
  * <pre>
- * 问题：
+ * Q:
  * 查看padding 是如何在LinkedTransferQueue(since 1.5)中使用的，
  * 得出padding 的使用模式
+ * A:TODO 
  * 
  * http://gee.cs.oswego.edu/cgi-bin/viewcvs.cgi/jsr166/src/jsr166y/LinkedTransferQueue.java?revision=1.1&view=markup
  * 步骤：
@@ -58,7 +59,10 @@ Space losses: 0 bytes internal + 4 bytes external = 4 bytes total
  *
  */
 public class PaddedUsageLinkedTransferQueueTester {
-
+	public static void main(String[] args) {
+		LinkedTransferQueue q=null;
+		//q.xfer(q, false, 0, 0);
+	}
  
 	static{
 		System.out.println(System.getProperties().get("java.version"));
@@ -66,9 +70,7 @@ public class PaddedUsageLinkedTransferQueueTester {
 		String layout = ClassLayout.parseClass(PaddedAtomicReference.class).toPrintable();
 		System.out.println(layout);
 	}
-	public static void main(String[] args) {
-		LinkedTransferQueue q;
-	}
+
 	/**
 	 * 在文中我们能够看到doug lea 使用padding 构造了自己的AtomicReference实现
 	 * 
@@ -88,7 +90,7 @@ public class PaddedUsageLinkedTransferQueueTester {
     /**
      * Q:padded 的节点主要用在队列的头和尾，
      * 看起来头尾被竞争使用最厉害 ？
-     * 
+     * A:TODO 
      *  
      * */
     private final PaddedAtomicReference<QNode> head = 
@@ -120,7 +122,7 @@ public class PaddedUsageLinkedTransferQueueTester {
          * 这里和java8 的实现很大不同，
          * 为什么会产生转变，java8 使用了volatile 的Node 做头和尾巴，
          * 之前是用PaddedAtomicReference  ??
-         * 
+         * A:TODO 
          * */
         final PaddedAtomicReference<QNode> head = this.head;
         final PaddedAtomicReference<QNode> tail = this.tail;
