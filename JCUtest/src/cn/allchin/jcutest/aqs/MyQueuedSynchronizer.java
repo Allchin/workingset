@@ -79,7 +79,7 @@ public class MyQueuedSynchronizer extends AbstractQueuedSynchronizer {
          * to clear in anticipation of signalling.  It is OK if this
          * fails or if status is changed by waiting thread.
          * Q:为啥要设置成 0 
-         * ???
+         * A:TODO ???
          */
         int ws = node.waitStatus;
         if (ws < 0)
@@ -413,6 +413,7 @@ public class MyQueuedSynchronizer extends AbstractQueuedSynchronizer {
 		head = node;
 		/**
 		 * Q:设置头就设置头，为啥要把头的thead设置为null ?
+		 * A:TODO 
 		 * 
 		 * */
 		node.thread = null;
@@ -502,6 +503,7 @@ public class MyQueuedSynchronizer extends AbstractQueuedSynchronizer {
 		/**
 		 * <pre>
 		 * Q: 这是什么鬼 ? 为啥叫nextwaiter ? 干什么使
+		 * A:TODO 
 		 * 
 		 * Link to next node waiting on condition, 
 		 * or the special value SHARED. 
@@ -541,6 +543,7 @@ public class MyQueuedSynchronizer extends AbstractQueuedSynchronizer {
 			Node p = prev;
 			if (p == null) {
 				//Q: 为什么要判空 ?
+				//TODO 
 				throw new NullPointerException();
 			}
 
