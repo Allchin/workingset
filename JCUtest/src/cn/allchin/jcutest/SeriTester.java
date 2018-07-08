@@ -86,23 +86,31 @@ public class SeriTester {
 			
 			/**
 			 每次调用方法多少次？ 才需要消耗1  Millis,可能测试时需要调整，观察during,callTimes增长来调整
+			 
+			 为什么是 67108864 ？
+			 可能每个方法执行都不一样，这里测试你的程序run执行多少次会超过1000ms就是多少
 			 * */
-			int callTimes=131072;
+			long callTimes=67108864;
 			while(process.intValue()<maxRound) {
 				process.increment(); 
 				
 				boolean findZero=false;
 				for (Runnable run : runs) {
 					long start = System.currentTimeMillis();
-					for( int i=0;i<callTimes;i++) {
+					for( long i=0;i<callTimes;i++) {
 						run.run();
 					}
 					
 					long during = System.currentTimeMillis() - start;
 				
 					//
-					if(during<10) {
-						//记录执行时间，如果执行callTime此都消耗的时间比10 时间单位小，那实际上误差比较大,我们加大工作量
+					if(during<1000) { 
+						/**
+						 * 记录执行时间，如果执行callTime此都消耗的时间比100 ms 时间单位小，那实际上误差比较大,我们加大工作量
+						 * 
+						 * 为什么要执行长度超过1000ms的值，
+						 * 主要是屏蔽计算公式除法对tps值计算的误差，不超过千分之一
+						 * */
 						System.out.println(during);
 						findZero=true;
 					}
