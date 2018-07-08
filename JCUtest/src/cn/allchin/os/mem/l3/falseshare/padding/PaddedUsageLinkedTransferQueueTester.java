@@ -201,16 +201,42 @@ public class PaddedUsageLinkedTransferQueueTester {
     /* 
      * 下面的方法是其他依赖代码
      * */ 
-    
+    /**
+     * <pre>
+    * 1.8 演变成为Node class 
+    * 注释:
+      Queue nodes. Uses Object, not E, for items to allow forgetting
+    * them after use.  Relies heavily on Unsafe mechanics to minimize
+    * unnecessary ordering constraints: Writes that are intrinsically
+    * ordered wrt other accesses or CASes use simple relaxed forms.
+    * 
+    * 队列节点。使用Object而不是E,为了item可以允许在使用后被以往。
+    * 特别依赖Unsafe 机制 来最小化不必要的 排序约束条件: 
+    *  TODO：翻译
+    * 写操作本质上 ordered wrt
+    * 其他访问或者CAS 操作 以一种简单的形式。
+    */
     /** 
+     * <pre>
+     * 1.7:
      * Node class for LinkedTransferQueue. Opportunistically subclasses from
      * AtomicReference to represent item. Uses Object, not E, to allow
      * setting item to "this" after use, to avoid garbage
      * retention. Similarly, setting the next field to this is used as
      * sentinel that node is off list.
-     */
+     * 
+     * LTQ的节点类型，继承自AtomicReference是为了 携带item.
+     * 使用Object类型而不是E,是为了允许设置item to this对象 ,可以避免垃圾滞留。
+     * 同样的设置next to this 是为了方便感知节点已经出列。
+     * 
+     *
+     */ 
     static final class QNode extends AtomicReference<Object> {
-        volatile QNode next;
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+		volatile QNode next;
         volatile Thread waiter;       // to control park/unpark
         final boolean isData;
         QNode(Object item, boolean isData) {
