@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * 多个work并发测试的工具类，更公平，同样的条件进行测试。
  * @author citi0
- *
+ * @deprecated  先启动的线程会更有优势，可以尝试使用SeriTester替代本类
  */
 public class PalleTester {
 	private int threads = 4;
