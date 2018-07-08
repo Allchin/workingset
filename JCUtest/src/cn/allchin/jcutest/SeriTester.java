@@ -28,6 +28,7 @@ public class SeriTester {
 	// 运行时
 
 	private static ConcurrentHashMap<String, LongAdder> coustTimeMap = new ConcurrentHashMap<String, LongAdder>();
+	private static ConcurrentHashMap<String, Long> tpsMap = new ConcurrentHashMap<String, Long>();
 	private volatile static boolean allFinished = false;
 
 	public SeriTester(Runnable[] works, int threads) {
@@ -81,23 +82,43 @@ public class SeriTester {
 		}
 
 		@Override
-		public void run() { 
-			 
+		public void run() {
+			
+			/**
+			 每次调用方法多少次？ 才需要消耗1  Millis,可能测试时需要调整，观察during,callTimes增长来调整
+			 * */
+			int callTimes=131072;
 			while(process.intValue()<maxRound) {
 				process.increment(); 
+				
+				boolean findZero=false;
 				for (Runnable run : runs) {
 					long start = System.currentTimeMillis();
-					for( int i=0;i<100000;i++) {
+					for( int i=0;i<callTimes;i++) {
 						run.run();
 					}
 					
 					long during = System.currentTimeMillis() - start;
-					coustTimeMap.get(makeKey(run)).add(during);
+				
 					//
-					if(during==0) {
+					if(during<10) {
+						//记录执行时间，如果执行callTime此都消耗的时间比10 时间单位小，那实际上误差比较大,我们加大工作量
 						System.out.println(during);
+						findZero=true;
+					}
+					else {
+						String key=makeKey(run);
+						coustTimeMap.get(key).add(during);
+						long tps=callTimes/during;
+						tpsMap.put(key, tps);
+						
 					}
 					
+				}
+				if(findZero) {
+					//下次执行2倍的工作量
+					callTimes=callTimes*2;
+					System.out.println("callTimes|"+callTimes);
 				}
 			}
 			cd.countDown();
@@ -123,7 +144,8 @@ public class SeriTester {
 				}
 
 				System.out.println("target|"+maxRound+"|" + makeKey(lastWorks) + "last work|进度|" + lastWorks.process.intValue());
-				System.out.println("ticker1|总体耗时|" + "|" + coustTimeMap);
+				//System.out.println("ticker1|总体耗时|" + "|" + coustTimeMap);
+				System.out.println("ticker2|tps|" + "|" + tpsMap);
 				
 
 			}

@@ -12,25 +12,26 @@ public class SeriTesterItSelfTester {
 	 */
 	private static long justForGit=0;
 	public static void main(String[] args) {
-		int thread=4;
-		SeriTester st=new SeriTester(new Runnable[] {new AtomicLongWorker() ,new AtomicLongWorker(),new LongAdderWorker3() }, thread);
+		int thread=1;
+		SeriTester st=new SeriTester(new Runnable[] {new AtomicLongWorkerGI(),new AtomicLongWorker() ,new LongAdderWorker2(),new LongAdderWorker3() }, thread);
 		st.doTest();
 		justForGit++;
 		
 	}
 	public static class AtomicLongWorker implements   Runnable {
-		private volatile AtomicLong al=new AtomicLong();
-		
-		
-		public void run() {
-			 
+		private volatile AtomicLong al=new AtomicLong(); 
+		public void run() { 
 				justForGit=al.incrementAndGet();
 		 
-		}
-	  
-		 
+		} 
 	}
-	
+	public static class AtomicLongWorkerGI implements   Runnable {
+		private volatile AtomicLong al=new AtomicLong(); 
+		public void run() { 
+				justForGit=al.getAndIncrement();
+		 
+		} 
+	}
 	public static class LongAdderWorker2 implements   Runnable{
 		private volatile LongAdder al=new LongAdder();
 		public void run() { 
