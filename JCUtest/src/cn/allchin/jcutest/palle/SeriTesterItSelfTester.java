@@ -49,7 +49,7 @@ LongAdder在单线程情况下，没有AtomicLong性能好，
 	 */
 	public static void main(String[] args) {
 		int thread=1;
-		SeriTester st=new SeriTester(new Runnable[] {new AtomicLongWorkerGI(),new AtomicLongWorker() ,new LongAdderWorker2(),new LongAdderWorker3() }, thread,2);
+		SeriTester st=new SeriTester(new Runnable[] {new AtomicLongWorkerGI(),new AtomicLongWorker() ,new LongAdderWorker2(),new LongAdderWorker3() }, thread,2046);
 		st.doTest();  
 		justForGit++;
 		

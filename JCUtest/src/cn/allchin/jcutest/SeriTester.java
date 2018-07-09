@@ -113,16 +113,6 @@ public class SeriTester {
 					}
 
 					long during = System.currentTimeMillis() - start;
-
-					String key = makeKey(run);
-					coustTimeMap.get(key).add(during);
-
-					BigDecimal tpsBig = new BigDecimal(callTimes).multiply(BigDecimal.valueOf(1000)).setScale(4)
-							.divide(new BigDecimal(during), RoundingMode.HALF_UP);
-
-					System.out.println("callTimes|" + callTimes + "|during|" + during);
-					tpsMap.put(key, tpsBig);
-
 					if (during < 1000) {
 						/**
 						 * 记录执行时间，如果执行callTime此都消耗的时间比100 ms
@@ -130,15 +120,25 @@ public class SeriTester {
 						 * 
 						 * 为什么要执行长度超过1000ms的值， 主要是屏蔽计算公式除法对tps值计算的误差，不超过千分之一
 						 */
-						System.out.println(during);
+						 
 						findZero = true;
 					}
+					else{
+						String key = makeKey(run);
+						coustTimeMap.get(key).add(during);
+
+						BigDecimal tpsBig = new BigDecimal(callTimes).multiply(BigDecimal.valueOf(1000)).setScale(4)
+								.divide(new BigDecimal(during), RoundingMode.HALF_UP);
+
+						 
+						tpsMap.put(key, tpsBig); 
+					} 
 
 				}
 				if (findZero) {
 					// 下次执行2倍的工作量
 					callTimes = callTimes * 2;
-					System.out.println("callTimes|" + callTimes);
+					System.out.println("增长callTimes|" + callTimes);
 				}
 			}
 			cd.countDown();
