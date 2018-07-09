@@ -124,13 +124,13 @@ public class SeriTester {
 						System.out.println(during);
 						findZero=true;
 					}
-					else {
+					{
 						String key=makeKey(run);
 						coustTimeMap.get(key).add(during);
 						 
 						BigDecimal tpsBig=new BigDecimal(callTimes).multiply(BigDecimal.valueOf(1000)).setScale(4).divide(new BigDecimal(during), RoundingMode.HALF_UP);
 						
-						System.out.println(callTimes+"|callTimes|"+during);
+						//System.out.println(callTimes+"|callTimes|"+during);
 						tpsMap.put(key, tpsBig);
 						
 					}
