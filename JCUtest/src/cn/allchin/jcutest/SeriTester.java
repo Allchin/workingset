@@ -113,6 +113,7 @@ public class SeriTester {
 					}
 
 					long during = System.currentTimeMillis() - start;
+					
 					if (during < 1000) {
 						/**
 						 * 记录执行时间，如果执行callTime此都消耗的时间比100 ms
@@ -124,6 +125,7 @@ public class SeriTester {
 						findZero = true;
 					}
 					else{
+						System.out.println("1");
 						String key = makeKey(run);
 						coustTimeMap.get(key).add(during);
 
