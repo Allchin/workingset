@@ -23,12 +23,12 @@ import java.util.concurrent.locks.AbstractQueuedSynchronizer.ConditionObject;
  * @author renxing.zhang
  *
  */
-public class MyConditionObject {
+public class MyConditionObject {/*
 	public static void main(String[] args) {
 		ConditionObject co=null;
 	}
 	
-	  /**
+	  *//**
      * Implements interruptible condition wait.
      * <ol>
      * <li> If current thread is interrupted, throw InterruptedException.
@@ -40,7 +40,7 @@ public class MyConditionObject {
      *      {@link #acquire} with saved state as argument.
      * <li> If interrupted while blocked in step 4, throw InterruptedException.
      * </ol>
-     */
+     *//*
     public final void await() throws InterruptedException {
         if (Thread.interrupted())
             throw new InterruptedException();
@@ -59,27 +59,27 @@ public class MyConditionObject {
         if (interruptMode != 0)
             reportInterruptAfterWait(interruptMode);
     }
-    /**
+    *//**
      * 返回false ： 节点还在等待状态，或者节点的前一个节点是null ??
      * Q:前一个节点是null代表啥
      * A: TODO 
      * 返回true :节点的下个节点不是null
      * @param node
      * @return
-     */
+     *//*
     final boolean isOnSyncQueue(Node node) {
         if (node.waitStatus == Node.CONDITION || node.prev == null)
             return false;
         if (node.next != null) // If has successor, it must be on queue
             return true;
-        /*
+        
          * node.prev can be non-null, but not yet on queue because
          * the CAS to place it on queue can fail. So we have to
          * traverse from tail to make sure it actually made it.  It
          * will always be near the tail in calls to this method, and
          * unless the CAS failed (which is unlikely), it will be
          * there, so we hardly ever traverse much.
-         */
+         
         return findNodeFromTail(node);
     }
-}
+*/}

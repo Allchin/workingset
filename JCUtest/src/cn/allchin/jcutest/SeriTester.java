@@ -21,8 +21,8 @@ public class SeriTester {
 	/**
 	 * 方法执行次数
 	 */
-	private static int dftCallTimes=2;
-	 
+	private static int dftCallTimes = 2;
+
 	// 共同目标
 	private final static int maxRound = Integer.MAX_VALUE / 2;
 	private ExecutorService fixedTheadPool = null;
@@ -35,22 +35,24 @@ public class SeriTester {
 	private static ConcurrentHashMap<String, LongAdder> coustTimeMap = new ConcurrentHashMap<String, LongAdder>();
 	private static ConcurrentHashMap<String, BigDecimal> tpsMap = new ConcurrentHashMap<String, BigDecimal>();
 	private volatile static boolean allFinished = false;
-	public SeriTester(Runnable[] works, int threads,int callTimes) {
-	   
-	    this( works,   threads);
-	    this.dftCallTimes=callTimes;
-	    
+
+	public SeriTester(Runnable[] works, int threads, int callTimes) {
+
+		this(works, threads);
+		this.dftCallTimes = callTimes;
+
 	}
+
 	public SeriTester(Runnable[] works, int threads) {
 		this.threads = threads;
 		CountDownLatch cd = new CountDownLatch(threads);
-		serilizeWork=new SerilzeWorker(works, cd); 
-	
+		serilizeWork = new SerilzeWorker(works, cd);
+
 		fixedTheadPool = Executors.newFixedThreadPool(threads + 1);
 	}
 
 	public void doTest() {
-		
+
 		for (int i = 0; i < threads; i++) {
 			fixedTheadPool.submit(serilizeWork);
 		}
@@ -77,9 +79,9 @@ public class SeriTester {
 	public static class SerilzeWorker implements Runnable {
 		Runnable[] runs = null;
 		private CountDownLatch cd;
-	 
-		private   LongAdder  process = new LongAdder();
-		
+
+		private LongAdder process = new LongAdder();
+
 		SerilzeWorker(Runnable[] runs, CountDownLatch cd) {
 			this.runs = runs;
 			for (Runnable run : runs) {
@@ -93,53 +95,50 @@ public class SeriTester {
 
 		@Override
 		public void run() {
-			
+
 			/**
-			 每次调用方法多少次？ 才需要消耗1  Millis,可能测试时需要调整，观察during,callTimes增长来调整
-			 
-			 为什么是 67108864 ？
-			 可能每个方法执行都不一样，这里测试你的程序run执行多少次会超过1000ms就是多少
-			 * */
-			long callTimes=dftCallTimes;
-			while(process.intValue()<maxRound) {
-				process.increment(); 
-				
-				boolean findZero=false;
+			 * 每次调用方法多少次？ 才需要消耗1 Millis,可能测试时需要调整，观察during,callTimes增长来调整
+			 * 
+			 * 为什么是 67108864 ？ 可能每个方法执行都不一样，这里测试你的程序run执行多少次会超过1000ms就是多少
+			 */
+			long callTimes = dftCallTimes;
+			while (process.intValue() < maxRound) {
+				process.increment();
+
+				boolean findZero = false;
 				for (Runnable run : runs) {
 					long start = System.currentTimeMillis();
-					for( long i=0;i<callTimes;i++) {
+					for (long i = 0; i < callTimes; i++) {
 						run.run();
 					}
-					
+
 					long during = System.currentTimeMillis() - start;
-				
-					//
-					if(during<1000) { 
+
+					String key = makeKey(run);
+					coustTimeMap.get(key).add(during);
+
+					BigDecimal tpsBig = new BigDecimal(callTimes).multiply(BigDecimal.valueOf(1000)).setScale(4)
+							.divide(new BigDecimal(during), RoundingMode.HALF_UP);
+
+					System.out.println("callTimes|" + callTimes + "|during|" + during);
+					tpsMap.put(key, tpsBig);
+
+					if (during < 1000) {
 						/**
-						 * 记录执行时间，如果执行callTime此都消耗的时间比100 ms 时间单位小，那实际上误差比较大,我们加大工作量
+						 * 记录执行时间，如果执行callTime此都消耗的时间比100 ms
+						 * 时间单位小，那实际上误差比较大,我们加大工作量
 						 * 
-						 * 为什么要执行长度超过1000ms的值，
-						 * 主要是屏蔽计算公式除法对tps值计算的误差，不超过千分之一
-						 * */
+						 * 为什么要执行长度超过1000ms的值， 主要是屏蔽计算公式除法对tps值计算的误差，不超过千分之一
+						 */
 						System.out.println(during);
-						findZero=true;
+						findZero = true;
 					}
-					{
-						String key=makeKey(run);
-						coustTimeMap.get(key).add(during);
-						 
-						BigDecimal tpsBig=new BigDecimal(callTimes).multiply(BigDecimal.valueOf(1000)).setScale(4).divide(new BigDecimal(during), RoundingMode.HALF_UP);
-						
-						//System.out.println(callTimes+"|callTimes|"+during);
-						tpsMap.put(key, tpsBig);
-						
-					}
-					
+
 				}
-				if(findZero) {
-					//下次执行2倍的工作量
-					callTimes=callTimes*2;
-					System.out.println("callTimes|"+callTimes);
+				if (findZero) {
+					// 下次执行2倍的工作量
+					callTimes = callTimes * 2;
+					System.out.println("callTimes|" + callTimes);
 				}
 			}
 			cd.countDown();
@@ -149,10 +148,9 @@ public class SeriTester {
 
 	public static class Ticker implements Runnable {
 		private SerilzeWorker lastWorks;
-		 
 
-		public Ticker(SerilzeWorker works ) {
-			 
+		public Ticker(SerilzeWorker works) {
+
 			this.lastWorks = works;
 		}
 
@@ -164,13 +162,12 @@ public class SeriTester {
 				} catch (InterruptedException e) {
 				}
 
-				System.out.println("target|"+maxRound+"|" + makeKey(lastWorks) + "last work|进度|" + lastWorks.process.intValue());
-				//System.out.println("ticker1|总体耗时|" + "|" + coustTimeMap);
+				System.out.println("target|" + maxRound + "|" + makeKey(lastWorks) + "last work|进度|"
+						+ lastWorks.process.intValue());
+				// System.out.println("ticker1|总体耗时|" + "|" + coustTimeMap);
 				System.out.println("ticker2|tps|" + "|" + tpsMap);
-				
 
 			}
-			
 
 		}
 
