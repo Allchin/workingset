@@ -1,5 +1,7 @@
 package cn.allchin.jcutest;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -16,7 +18,10 @@ import java.util.concurrent.atomic.LongAdder;
 public class SeriTester {
 	private int threads = 4;
 	private SerilzeWorker serilizeWork;
-
+	/**
+	 * 方法执行次数
+	 */
+	private static int dftCallTimes=2;
 	 
 	// 共同目标
 	private final static int maxRound = Integer.MAX_VALUE / 2;
@@ -28,9 +33,14 @@ public class SeriTester {
 	// 运行时
 
 	private static ConcurrentHashMap<String, LongAdder> coustTimeMap = new ConcurrentHashMap<String, LongAdder>();
-	private static ConcurrentHashMap<String, Long> tpsMap = new ConcurrentHashMap<String, Long>();
+	private static ConcurrentHashMap<String, BigDecimal> tpsMap = new ConcurrentHashMap<String, BigDecimal>();
 	private volatile static boolean allFinished = false;
-
+	public SeriTester(Runnable[] works, int threads,int callTimes) {
+	   
+	    this( works,   threads);
+	    this.dftCallTimes=callTimes;
+	    
+	}
 	public SeriTester(Runnable[] works, int threads) {
 		this.threads = threads;
 		CountDownLatch cd = new CountDownLatch(threads);
@@ -90,7 +100,7 @@ public class SeriTester {
 			 为什么是 67108864 ？
 			 可能每个方法执行都不一样，这里测试你的程序run执行多少次会超过1000ms就是多少
 			 * */
-			long callTimes=67108864;
+			long callTimes=dftCallTimes;
 			while(process.intValue()<maxRound) {
 				process.increment(); 
 				
@@ -117,8 +127,11 @@ public class SeriTester {
 					else {
 						String key=makeKey(run);
 						coustTimeMap.get(key).add(during);
-						long tps=callTimes/during;
-						tpsMap.put(key, tps);
+						double tps=callTimes/during;
+						BigDecimal tpsBig=new BigDecimal(callTimes).setScale(4).divide(new BigDecimal(during), RoundingMode.HALF_UP);
+						
+						System.out.println(callTimes+"|callTimes|"+during);
+						tpsMap.put(key, tpsBig);
 						
 					}
 					
