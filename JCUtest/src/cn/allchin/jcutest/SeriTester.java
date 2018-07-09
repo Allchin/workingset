@@ -125,7 +125,7 @@ public class SeriTester {
 						findZero = true;
 					}
 					else{
-						System.out.println("1");
+					 
 						String key = makeKey(run);
 						coustTimeMap.get(key).add(during);
 
