@@ -48,48 +48,9 @@ public class StoneRefine {
 		return result;
 	}
 
-	public static Refine requestRefineL5With4Stone() {
-		Refine result = new Refine();
+ 
 
-		 
-		result.stone = 4;
-
-		return result;
-	}
-
-	public static Refine requestRefineL5With3Stone() {
-		Refine result = new Refine();
-
-		 
-		result.stone = 3;
-
-		return result;
-	}
-
-	public static Refine requestRefineL2With3Stone() {
-		Refine result = new Refine();
-
-	 
-		result.stone = 3;
-
-		return result;
-	}
-
-	public static Refine requestRefineL2With4Stone() {
-		Refine result = new Refine();
-
-	 
-		result.stone = 3;
-
-		return result;
-	}
-
-	public static class Refine {
-
-	 
-		int stone = 0;
-	}
-
+  
 	public static class Rate {
 		double rate = 0.00;
 		double rate2 = 0.00;
@@ -152,6 +113,7 @@ public class StoneRefine {
 
 	/**
 	 * 1金 =10000
+	 * 市场价格
 	 * 
 	 * @param level
 	 * @return
