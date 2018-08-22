@@ -7,6 +7,17 @@ import java.sql.SQLFeatureNotSupportedException;
 import java.util.Properties;
 import java.util.logging.Logger;
 
+/**
+ *  * <P>When the method <code>getConnection</code> is called,
+ * the <code>DriverManager</code> will attempt to
+ * locate a suitable driver from amongst those loaded at
+ * initialization and those loaded explicitly using the same classloader
+ * as the current applet or application.
+ * 
+ * 那只有在 数据库有请求的时候，框架才会加载
+ * @author citi0
+ *
+ */
 public class SqlDriverBooter implements java.sql.Driver {
 	public SqlDriverBooter() {
 		System.out.println("SqlDriverBooter"); 
