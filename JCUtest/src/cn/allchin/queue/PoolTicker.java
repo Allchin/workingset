@@ -6,7 +6,12 @@ import java.util.concurrent.ThreadPoolExecutor;
 public class PoolTicker {
 	private ThreadPoolExecutor executor = null;
 
-	PoolTicker(ThreadPoolExecutor executor,CountDownLatch cdt) {
+	/**
+	 * 非阻塞，并且完成后会终止应用
+	 * @param executor
+	 * @param cdt
+	 */
+	public PoolTicker(ThreadPoolExecutor executor,CountDownLatch cdt) {
 		this.executor = executor;
 		Thread t = new Thread() {
 			public void run() {

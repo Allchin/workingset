@@ -4,10 +4,11 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
 
-import cn.allchin.queue.withfixedpool.ArrayBlockingQueueWithFixedPool;
+import cn.allchin.queue.withfixedpool.ArrayBlockingQueueWithCachedPool;
+import cn.allchin.queue.withfixedpool.LimitedLinkedBlockingQueueWithCachedPool;
 
 public class PoolRunner {
-	static QueueThreadPoolCreater[] creaters = new QueueThreadPoolCreater[] { new ArrayBlockingQueueWithFixedPool() };
+	static QueueThreadPoolCreater[] creaters = new QueueThreadPoolCreater[] { new ArrayBlockingQueueWithCachedPool(),new LimitedLinkedBlockingQueueWithCachedPool() };
 	static ThreadPoolExecutor[] pools = new ThreadPoolExecutor[creaters.length];
 
 	static {
@@ -33,7 +34,7 @@ public class PoolRunner {
 	 */
 	public static void testOne(){
 		CountDownLatch cdt = new CountDownLatch(1);
-		ThreadPoolExecutor pool=new ArrayBlockingQueueWithFixedPool().createPool();
+		ThreadPoolExecutor pool=new LimitedLinkedBlockingQueueWithCachedPool().createPool();
 		new PoolTicker(pool, cdt);
 		addJobToPool(pool);
 	}
@@ -43,8 +44,9 @@ public class PoolRunner {
 		//testAll();
 	}
 
-	private static void addJobToPool(Executor pool) {
+	public static void addJobToPool(Executor pool) {
 		for (int i = 0; i < 10; i++) {
+			//System.out.println("准备添加了一个任务到线程池");
 			pool.execute(new LongLifeJob());
 			try {
 				Thread.sleep(1000);

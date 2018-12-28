@@ -47,7 +47,7 @@ active|4|max|4|core|2|inqueue|3|queueSize|3|queueRemain|0
  * @author renxing.zhang
  *
  */
-public class ArrayBlockingQueueWithFixedPool implements QueueThreadPoolCreater {
+public class ArrayBlockingQueueWithCachedPool implements QueueThreadPoolCreater {
 
 	int nThreads = 2;
 	ThreadPoolExecutor pool = new ThreadPoolExecutor(nThreads, nThreads+2, 0L, TimeUnit.MILLISECONDS,
