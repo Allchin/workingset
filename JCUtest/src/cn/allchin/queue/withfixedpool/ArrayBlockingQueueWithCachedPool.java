@@ -4,6 +4,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import cn.allchin.queue.PoolRunner;
 import cn.allchin.queue.QueueThreadPoolCreater;
 
 /**
@@ -57,4 +58,9 @@ public class ArrayBlockingQueueWithCachedPool implements QueueThreadPoolCreater 
 	public ThreadPoolExecutor createPool() {
 		return pool;
 	}
+	
+	public static void main(String[] args) {
+		PoolRunner.testOne(new ArrayBlockingQueueWithCachedPool());
+	}
+
 }
